@@ -1,0 +1,884 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Admin — Onde Tem Samba</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap');
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --ink:#0D0A07; --amber:#E8872A; --amber2:#F5A94A;
+  --cream:#F4EBD8; --muted:rgba(244,235,216,.48);
+  --border:rgba(232,135,42,.18); --glow:rgba(232,135,42,.3);
+  --surface:rgba(20,12,4,.95); --card:rgba(28,16,5,.98);
+  --success:#4CAF50; --danger:#E53935;
+}
+html,body{width:100%;height:100%;background:var(--ink);font-family:'Space Grotesk',sans-serif;color:var(--cream);}
+body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
+  background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,.04) 2px,rgba(0,0,0,.04) 4px);}
+
+/* ── INPUT / SELECT / TEXTAREA global ── */
+input,select,textarea,button{font-family:'Space Grotesk',sans-serif;}
+.field{margin-bottom:14px;}
+.field label{display:block;font-size:11px;color:var(--muted);letter-spacing:.05em;text-transform:uppercase;margin-bottom:5px;}
+.field input,.field select,.field textarea{
+  width:100%;padding:9px 12px;font-size:13px;
+  background:rgba(232,135,42,.06);
+  border:1px solid var(--border);border-radius:8px;
+  color:var(--cream);outline:none;transition:border-color .15s;
+}
+.field input::placeholder,.field textarea::placeholder{color:var(--muted);}
+.field input:focus,.field select:focus,.field textarea:focus{border-color:rgba(232,135,42,.55);}
+.field select option{background:#1C0F05;color:var(--cream);}
+.field textarea{resize:vertical;min-height:70px;}
+.field-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.field-row3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;}
+
+/* ── BUTTONS ── */
+.btn{padding:9px 20px;border-radius:8px;font-size:12px;font-weight:700;letter-spacing:.06em;cursor:pointer;border:none;transition:all .15s;display:inline-flex;align-items:center;gap:6px;}
+.btn-primary{background:var(--amber);color:var(--ink);box-shadow:0 0 14px var(--glow);}
+.btn-primary:hover{background:var(--amber2);}
+.btn-ghost{background:transparent;color:var(--cream);border:1px solid var(--border);}
+.btn-ghost:hover{border-color:rgba(232,135,42,.5);color:var(--amber);}
+.btn-danger{background:transparent;color:var(--danger);border:1px solid rgba(229,57,53,.3);}
+.btn-danger:hover{background:rgba(229,57,53,.12);}
+.btn-sm{padding:5px 12px;font-size:11px;}
+
+/* ── LAYOUT ── */
+#app{display:flex;height:100vh;position:relative;z-index:1;}
+
+/* ── SIDEBAR ── */
+#sidebar{width:220px;background:var(--surface);border-right:1px solid var(--border);
+  display:flex;flex-direction:column;flex-shrink:0;transition:transform .25s;}
+.sb-brand{padding:18px 16px 14px;display:flex;align-items:center;gap:8px;border-bottom:1px solid var(--border);}
+.sb-dot{width:26px;height:26px;border-radius:50%;background:var(--amber);
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;
+  box-shadow:0 0 10px var(--glow);}
+.sb-dot svg{width:13px;height:13px;fill:var(--ink);}
+.sb-title{font-size:13px;font-weight:700;color:var(--cream);}
+.sb-title em{color:var(--amber);font-style:normal;}
+.sb-subtitle{font-size:10px;color:var(--muted);letter-spacing:.05em;padding:8px 16px 10px;border-bottom:1px solid var(--border);text-transform:uppercase;}
+nav{flex:1;padding:8px 0;}
+.nav-item{display:flex;align-items:center;gap:10px;padding:10px 16px;font-size:13px;
+  color:var(--muted);cursor:pointer;transition:all .15s;border-left:2px solid transparent;}
+.nav-item svg{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0;}
+.nav-item:hover{color:var(--cream);background:rgba(232,135,42,.06);}
+.nav-item.active{color:var(--amber);border-left-color:var(--amber);background:rgba(232,135,42,.08);}
+.sb-footer{padding:12px 16px;border-top:1px solid var(--border);}
+.sb-user{font-size:12px;color:var(--muted);margin-bottom:8px;display:flex;align-items:center;gap:6px;}
+.sb-user span{color:var(--cream);font-weight:500;}
+.btn-logout{width:100%;padding:7px;background:transparent;color:var(--muted);
+  border:1px solid var(--border);border-radius:8px;font-size:11px;cursor:pointer;
+  font-family:'Space Grotesk',sans-serif;transition:all .15s;text-align:center;}
+.btn-logout:hover{color:var(--danger);border-color:rgba(229,57,53,.4);}
+
+/* ── MAIN ── */
+#main{flex:1;display:flex;flex-direction:column;overflow:hidden;}
+#main-header{padding:16px 24px;border-bottom:1px solid var(--border);
+  display:flex;align-items:center;justify-content:space-between;flex-shrink:0;}
+#main-header h1{font-size:17px;font-weight:700;color:var(--cream);}
+#main-content{flex:1;overflow-y:auto;padding:24px;}
+
+/* ── SCREENS ── */
+.screen{display:none;}
+.screen.active{display:block;}
+
+/* ── LOGIN ── */
+#login-wrap{position:fixed;inset:0;z-index:200;background:var(--ink);
+  display:flex;align-items:center;justify-content:center;}
+.login-card{width:360px;background:var(--card);border:1px solid var(--border);
+  border-radius:16px;padding:36px 32px;
+  box-shadow:0 0 48px rgba(232,135,42,.12),0 20px 60px rgba(0,0,0,.6);}
+.login-brand{display:flex;align-items:center;gap:9px;margin-bottom:28px;justify-content:center;}
+.login-brand-dot{width:32px;height:32px;border-radius:50%;background:var(--amber);
+  display:flex;align-items:center;justify-content:center;box-shadow:0 0 14px var(--glow);}
+.login-brand-dot svg{width:15px;height:15px;fill:var(--ink);}
+.login-title{font-size:15px;font-weight:700;color:var(--cream);}
+.login-title em{color:var(--amber);font-style:normal;}
+.login-subtitle{font-size:13px;color:var(--muted);text-align:center;margin-bottom:24px;}
+#login-error{color:var(--danger);font-size:12px;text-align:center;margin-bottom:10px;display:none;}
+.btn-login{width:100%;padding:11px;background:var(--amber);color:var(--ink);border:none;
+  border-radius:8px;font-size:13px;font-weight:700;letter-spacing:.06em;cursor:pointer;
+  font-family:'Space Grotesk',sans-serif;box-shadow:0 0 16px var(--glow);transition:all .15s;margin-top:4px;}
+.btn-login:hover{background:var(--amber2);}
+
+/* ── METRICS ── */
+.metrics{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:24px;}
+.metric{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:18px 16px;}
+.metric-val{font-size:28px;font-weight:700;color:var(--cream);}
+.metric-label{font-size:11px;color:var(--muted);margin-top:3px;letter-spacing:.04em;text-transform:uppercase;}
+.metric-delta{font-size:11px;color:var(--amber);margin-top:4px;}
+
+/* ── TABLE ── */
+.table-wrap{background:var(--card);border:1px solid var(--border);border-radius:12px;overflow:hidden;}
+.table-head{padding:14px 18px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border);}
+.table-head h3{font-size:13px;font-weight:600;color:var(--cream);}
+.table-search{padding:6px 10px;background:rgba(232,135,42,.06);border:1px solid var(--border);
+  border-radius:8px;font-size:12px;color:var(--cream);outline:none;width:200px;}
+.table-search::placeholder{color:var(--muted);}
+table{width:100%;border-collapse:collapse;}
+th{padding:10px 18px;font-size:10px;font-weight:700;color:var(--muted);text-align:left;
+  letter-spacing:.07em;text-transform:uppercase;border-bottom:1px solid var(--border);
+  background:rgba(232,135,42,.04);}
+td{padding:11px 18px;font-size:12px;color:rgba(244,235,216,.8);border-bottom:1px solid rgba(232,135,42,.06);}
+tr:last-child td{border-bottom:none;}
+tr:hover td{background:rgba(232,135,42,.04);}
+.badge{display:inline-block;font-size:10px;padding:2px 8px;border-radius:10px;font-weight:600;letter-spacing:.04em;}
+.badge-pub{background:rgba(76,175,80,.15);color:#4CAF50;}
+.badge-draft{background:rgba(232,135,42,.12);color:var(--amber);}
+.badge-enc{background:rgba(244,235,216,.08);color:var(--muted);}
+.badge-pro{background:rgba(232,135,42,.2);color:var(--amber);}
+.badge-free{background:rgba(244,235,216,.08);color:var(--muted);}
+.td-actions{display:flex;gap:6px;}
+
+/* ── MODAL ── */
+.modal-overlay{position:fixed;inset:0;z-index:500;background:rgba(0,0,0,.6);
+  display:flex;align-items:center;justify-content:center;
+  opacity:0;pointer-events:none;transition:opacity .2s;}
+.modal-overlay.open{opacity:1;pointer-events:all;}
+.modal{background:var(--card);border:1px solid var(--border);border-radius:14px;
+  width:520px;max-height:90vh;overflow-y:auto;
+  box-shadow:0 0 40px rgba(232,135,42,.15),0 20px 60px rgba(0,0,0,.7);
+  transform:scale(.92);transition:transform .22s cubic-bezier(.34,1.36,.64,1);}
+.modal-overlay.open .modal{transform:scale(1);}
+.modal-header{padding:18px 20px;border-bottom:1px solid var(--border);
+  display:flex;align-items:center;justify-content:space-between;}
+.modal-header h2{font-size:15px;font-weight:700;color:var(--cream);}
+.modal-close{background:transparent;border:none;cursor:pointer;color:var(--muted);
+  font-size:20px;line-height:1;padding:2px 4px;transition:color .15s;}
+.modal-close:hover{color:var(--cream);}
+.modal-body{padding:20px;}
+.modal-footer{padding:14px 20px;border-top:1px solid var(--border);
+  display:flex;justify-content:flex-end;gap:10px;}
+
+/* ── TOAST ── */
+#toast{position:fixed;bottom:28px;left:50%;transform:translateX(-50%) translateY(20px);
+  z-index:999;background:rgba(76,175,80,.92);color:#fff;
+  padding:9px 22px;border-radius:20px;font-size:12px;font-weight:700;
+  opacity:0;pointer-events:none;transition:all .25s;white-space:nowrap;}
+#toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+#toast.error{background:rgba(229,57,53,.92);}
+
+/* ── CHART ── */
+.chart-bar-wrap{display:flex;align-items:flex-end;gap:6px;height:80px;margin-top:12px;}
+.chart-bar{flex:1;background:rgba(232,135,42,.18);border-radius:4px 4px 0 0;
+  transition:height .4s;position:relative;cursor:default;}
+.chart-bar:hover{background:rgba(232,135,42,.35);}
+.chart-bar span{position:absolute;bottom:-18px;left:50%;transform:translateX(-50%);
+  font-size:9px;color:var(--muted);white-space:nowrap;}
+.chart-bar-val{position:absolute;top:-18px;left:50%;transform:translateX(-50%);
+  font-size:9px;color:var(--amber);white-space:nowrap;}
+
+/* ── RESPONSIVE ── */
+@media(max-width:768px){
+  #sidebar{position:fixed;left:-220px;z-index:300;height:100%;}
+  #sidebar.open{left:0;box-shadow:4px 0 24px rgba(0,0,0,.5);}
+  .metrics{grid-template-columns:1fr 1fr;}
+  .field-row,.field-row3{grid-template-columns:1fr;}
+}
+</style>
+</head>
+<body>
+
+<!-- ══ LOGIN ══ -->
+<div id="login-wrap">
+  <div class="login-card">
+    <div class="login-brand">
+      <div class="login-brand-dot">
+        <svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
+      </div>
+      <div class="login-title">onde tem <em>samba</em></div>
+    </div>
+    <p class="login-subtitle">Acesso restrito — painel administrativo</p>
+    <div id="login-error">E-mail ou senha incorretos.</div>
+    <div class="field"><label>E-mail</label><input type="email" id="l-email" placeholder="admin@ondetemSamba.com.br"/></div>
+    <div class="field"><label>Senha</label><input type="password" id="l-senha" placeholder="••••••••"/></div>
+    <button class="btn-login" onclick="doLogin()">Entrar no Admin</button>
+  </div>
+</div>
+
+<!-- ══ APP ══ -->
+<div id="app" style="display:none;">
+
+  <!-- SIDEBAR -->
+  <div id="sidebar">
+    <div class="sb-brand">
+      <div class="sb-dot"><svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg></div>
+      <div class="sb-title">onde tem <em>samba</em></div>
+    </div>
+    <div class="sb-subtitle">Admin</div>
+    <nav>
+      <div class="nav-item active" onclick="goTo('dashboard',this)">
+        <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+        Dashboard
+      </div>
+      <div class="nav-item" onclick="goTo('eventos',this)">
+        <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+        Eventos
+      </div>
+      <div class="nav-item" onclick="goTo('organizadores',this)">
+        <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+        Organizadores
+      </div>
+    </nav>
+    <div class="sb-footer">
+      <div class="sb-user">Logado como <span id="sb-email">—</span></div>
+      <button class="btn-logout" onclick="doLogout()">Sair</button>
+    </div>
+  </div>
+
+  <!-- MAIN -->
+  <div id="main">
+    <div id="main-header">
+      <h1 id="page-title">Dashboard</h1>
+      <div id="header-actions"></div>
+    </div>
+    <div id="main-content">
+
+      <!-- ── DASHBOARD ── -->
+      <div id="screen-dashboard" class="screen active">
+        <div class="metrics">
+          <div class="metric">
+            <div class="metric-val" id="m-eventos">—</div>
+            <div class="metric-label">Eventos ativos</div>
+            <div class="metric-delta">↑ publicados</div>
+          </div>
+          <div class="metric">
+            <div class="metric-val" id="m-orgs">—</div>
+            <div class="metric-label">Organizadores</div>
+            <div class="metric-delta">espaços cadastrados</div>
+          </div>
+          <div class="metric">
+            <div class="metric-val" id="m-hoje">—</div>
+            <div class="metric-label">Eventos hoje</div>
+            <div class="metric-delta">ocorrendo agora</div>
+          </div>
+          <div class="metric">
+            <div class="metric-val" id="m-pro">—</div>
+            <div class="metric-label">Plano Pro</div>
+            <div class="metric-delta">organizadores pagantes</div>
+          </div>
+        </div>
+
+        <div class="table-wrap" style="margin-bottom:20px;">
+          <div class="table-head"><h3>Próximos eventos</h3></div>
+          <table>
+            <thead><tr>
+              <th>Evento</th><th>Local</th><th>Data</th><th>Ingresso</th><th>Status</th>
+            </tr></thead>
+            <tbody id="dash-events-body"></tbody>
+          </table>
+        </div>
+
+        <div class="table-wrap">
+          <div class="table-head"><h3>Visualizações — últimos 7 dias</h3></div>
+          <div style="padding:16px 18px 28px;">
+            <div class="chart-bar-wrap" id="chart-bars"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── EVENTOS ── -->
+      <div id="screen-eventos" class="screen">
+        <div class="table-wrap">
+          <div class="table-head">
+            <h3>Todos os eventos</h3>
+            <input class="table-search" type="text" placeholder="Buscar evento..." oninput="filterEvTable(this.value)"/>
+          </div>
+          <table>
+            <thead><tr>
+              <th>Nome</th><th>Organizador</th><th>Data</th><th>Ingresso</th><th>Status</th><th>Ações</th>
+            </tr></thead>
+            <tbody id="ev-table-body"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- ── ORGANIZADORES ── -->
+      <div id="screen-organizadores" class="screen">
+        <div class="table-wrap">
+          <div class="table-head">
+            <h3>Todos os organizadores</h3>
+            <input class="table-search" type="text" placeholder="Buscar organizador..." oninput="filterOrgTable(this.value)"/>
+          </div>
+          <table>
+            <thead><tr>
+              <th>Nome</th><th>Cidade</th><th>Plano</th><th>Estilos</th><th>Ações</th>
+            </tr></thead>
+            <tbody id="org-table-body"></tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- ══ MODAL EVENTO ══ -->
+<div class="modal-overlay" id="modal-evento">
+  <div class="modal">
+    <div class="modal-header">
+      <h2 id="modal-ev-title">Novo evento</h2>
+      <button class="modal-close" onclick="closeModal('modal-evento')">✕</button>
+    </div>
+    <div class="modal-body">
+      <input type="hidden" id="ev-id"/>
+      <div class="field"><label>Nome do evento *</label><input type="text" id="ev-nome" placeholder="Ex: Pagode toda quinta"/></div>
+      <div class="field-row">
+        <div class="field"><label>Organizador *</label>
+          <select id="ev-org"><option value="">Selecione...</option></select>
+        </div>
+        <div class="field"><label>Status</label>
+          <select id="ev-status">
+            <option value="publicado">Publicado</option>
+            <option value="rascunho">Rascunho</option>
+            <option value="encerrado">Encerrado</option>
+          </select>
+        </div>
+      </div>
+      <div class="field-row">
+        <div class="field"><label>Data *</label><input type="date" id="ev-data"/></div>
+        <div class="field"><label>Recorrência</label>
+          <select id="ev-rec">
+            <option value="unico">Único</option>
+            <option value="semanal">Semanal</option>
+            <option value="quinzenal">Quinzenal</option>
+            <option value="mensal">Mensal</option>
+          </select>
+        </div>
+      </div>
+      <div class="field-row">
+        <div class="field"><label>Início</label><input type="time" id="ev-inicio" value="20:00"/></div>
+        <div class="field"><label>Término</label><input type="time" id="ev-fim" value="23:00"/></div>
+      </div>
+      <div class="field-row">
+        <div class="field"><label>Tipo de ingresso</label>
+          <select id="ev-tipo-ing" onchange="togglePreco()">
+            <option value="gratuito">Gratuito</option>
+            <option value="pago">Pago</option>
+            <option value="chapeu">Chapéu</option>
+          </select>
+        </div>
+        <div class="field" id="campo-preco" style="display:none;">
+          <label>Valor (R$)</label><input type="number" id="ev-preco" placeholder="0.00"/>
+        </div>
+      </div>
+      <div class="field"><label>Estilos musicais</label>
+        <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:2px;" id="estilos-check">
+          <label style="display:flex;align-items:center;gap:5px;font-size:12px;color:var(--muted);cursor:pointer;">
+            <input type="checkbox" value="pagode"/> Pagode</label>
+          <label style="display:flex;align-items:center;gap:5px;font-size:12px;color:var(--muted);cursor:pointer;">
+            <input type="checkbox" value="samba-de-raiz"/> Raiz</label>
+          <label style="display:flex;align-items:center;gap:5px;font-size:12px;color:var(--muted);cursor:pointer;">
+            <input type="checkbox" value="partido-alto"/> Partido alto</label>
+          <label style="display:flex;align-items:center;gap:5px;font-size:12px;color:var(--muted);cursor:pointer;">
+            <input type="checkbox" value="samba-rock"/> Samba-rock</label>
+          <label style="display:flex;align-items:center;gap:5px;font-size:12px;color:var(--muted);cursor:pointer;">
+            <input type="checkbox" value="choro"/> Choro</label>
+        </div>
+      </div>
+      <div class="field"><label>URL da imagem (opcional)</label><input type="url" id="ev-img" placeholder="https://..."/></div>
+      <div class="field"><label>Descrição</label><textarea id="ev-desc" placeholder="Descreva o evento..."></textarea></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal('modal-evento')">Cancelar</button>
+      <button class="btn btn-primary" onclick="saveEvento()">Salvar evento</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ MODAL ORGANIZADOR ══ -->
+<div class="modal-overlay" id="modal-org">
+  <div class="modal">
+    <div class="modal-header">
+      <h2 id="modal-org-title">Novo organizador</h2>
+      <button class="modal-close" onclick="closeModal('modal-org')">✕</button>
+    </div>
+    <div class="modal-body">
+      <input type="hidden" id="org-id"/>
+      <div class="field-row">
+        <div class="field"><label>Nome do espaço *</label><input type="text" id="org-nome" placeholder="Bar do Léo"/></div>
+        <div class="field"><label>Plano</label>
+          <select id="org-plano">
+            <option value="gratis">Grátis</option>
+            <option value="pro">Pro</option>
+          </select>
+        </div>
+      </div>
+      <div class="field"><label>Endereço completo *</label><input type="text" id="org-endereco" placeholder="Rua, número, bairro"/></div>
+      <div class="field-row">
+        <div class="field"><label>Cidade *</label><input type="text" id="org-cidade" placeholder="Porto Feliz"/></div>
+        <div class="field"><label>Estado</label>
+          <select id="org-estado">
+            <option value="SP">SP</option><option value="RJ">RJ</option>
+            <option value="MG">MG</option><option value="RS">RS</option>
+            <option value="BA">BA</option><option value="PE">PE</option>
+          </select>
+        </div>
+      </div>
+      <div class="field-row">
+        <div class="field"><label>Latitude</label><input type="number" step="any" id="org-lat" placeholder="-23.2155"/></div>
+        <div class="field"><label>Longitude</label><input type="number" step="any" id="org-lng" placeholder="-47.5270"/></div>
+      </div>
+      <div class="field"><label>Instagram</label><input type="text" id="org-insta" placeholder="@nomedobar"/></div>
+      <div class="field"><label>E-mail de contato</label><input type="email" id="org-email" placeholder="contato@bar.com"/></div>
+      <div class="field"><label>Sobre o espaço</label><textarea id="org-desc" placeholder="Descreva o espaço..."></textarea></div>
+      <div class="field"><label>Status</label>
+        <select id="org-ativo">
+          <option value="true">Ativo</option>
+          <option value="false">Inativo</option>
+        </select>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal('modal-org')">Cancelar</button>
+      <button class="btn btn-primary" onclick="saveOrg()">Salvar organizador</button>
+    </div>
+  </div>
+</div>
+
+<!-- CONFIRM DELETE -->
+<div class="modal-overlay" id="modal-confirm">
+  <div class="modal" style="width:380px;">
+    <div class="modal-header">
+      <h2>Confirmar exclusão</h2>
+      <button class="modal-close" onclick="closeModal('modal-confirm')">✕</button>
+    </div>
+    <div class="modal-body">
+      <p style="font-size:13px;color:var(--muted);line-height:1.6;" id="confirm-msg">Tem certeza?</p>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal('modal-confirm')">Cancelar</button>
+      <button class="btn btn-danger" id="confirm-ok-btn">Excluir</button>
+    </div>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script>
+// ── Config ──
+const SUPABASE_URL  = 'https://SEU_PROJECT_ID.supabase.co';
+const SUPABASE_ANON = 'SUA_ANON_KEY_AQUI';
+// Credenciais do admin (em produção use Supabase Auth)
+const ADMIN_EMAIL = 'admin@ondetemSamba.com.br';
+const ADMIN_SENHA = 'samba@2024';
+
+let sb = null;
+let currentUser = null;
+let allEventos = [], allOrgs = [];
+
+// ── Supabase client ──
+function getClient(){
+  if(!sb && SUPABASE_URL !== 'https://SEU_PROJECT_ID.supabase.co'){
+    sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
+  }
+  return sb;
+}
+
+// ── Login ──
+function doLogin(){
+  const email = document.getElementById('l-email').value.trim();
+  const senha  = document.getElementById('l-senha').value;
+  const err    = document.getElementById('login-error');
+  err.style.display = 'none';
+
+  // Autenticação simples local (substitua por Supabase Auth em produção)
+  if(email === ADMIN_EMAIL && senha === ADMIN_SENHA){
+    currentUser = email;
+    document.getElementById('login-wrap').style.display = 'none';
+    document.getElementById('app').style.display = 'flex';
+    document.getElementById('sb-email').textContent = email;
+    loadAll();
+  } else {
+    err.style.display = 'block';
+    document.getElementById('l-senha').value = '';
+  }
+}
+
+document.getElementById('l-senha').addEventListener('keydown', e => {
+  if(e.key === 'Enter') doLogin();
+});
+document.getElementById('l-email').addEventListener('keydown', e => {
+  if(e.key === 'Enter') document.getElementById('l-senha').focus();
+});
+
+function doLogout(){
+  currentUser = null;
+  document.getElementById('app').style.display = 'none';
+  document.getElementById('login-wrap').style.display = 'flex';
+  document.getElementById('l-email').value = '';
+  document.getElementById('l-senha').value = '';
+}
+
+// ── Navegação ──
+function goTo(screen, el){
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  document.getElementById('screen-'+screen).classList.add('active');
+  if(el) el.classList.add('active');
+  const titles = {dashboard:'Dashboard', eventos:'Eventos', organizadores:'Organizadores'};
+  document.getElementById('page-title').textContent = titles[screen] || screen;
+  const actions = document.getElementById('header-actions');
+  if(screen === 'eventos'){
+    actions.innerHTML = `<button class="btn btn-primary" onclick="openModalEvento()">+ Novo evento</button>`;
+  } else if(screen === 'organizadores'){
+    actions.innerHTML = `<button class="btn btn-primary" onclick="openModalOrg()">+ Novo organizador</button>`;
+  } else {
+    actions.innerHTML = '';
+  }
+}
+
+// ── Toast ──
+function toast(msg, isErr=false){
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = isErr ? 'error show' : 'show';
+  setTimeout(()=> t.className = isErr ? 'error' : '', 3000);
+}
+
+// ── Helpers de data ──
+const todayStr = new Date().toISOString().split('T')[0];
+function fmtDate(ds){
+  if(!ds) return '—';
+  const d = new Date(ds+'T12:00:00');
+  return d.toLocaleDateString('pt-BR',{day:'2-digit',month:'short'});
+}
+function fmtIngresso(tipo, preco){
+  if(tipo==='gratuito') return 'Gratuito';
+  if(tipo==='chapeu')   return 'Chapéu';
+  return preco ? `R$ ${Number(preco).toFixed(0)}` : 'A confirmar';
+}
+function statusBadge(s){
+  const m={publicado:'badge-pub',rascunho:'badge-draft',encerrado:'badge-enc'};
+  return `<span class="badge ${m[s]||'badge-draft'}">${s}</span>`;
+}
+
+// ── Dados locais seed (quando Supabase não configurado) ──
+const today = new Date();
+const add = n => { const d=new Date(today); d.setDate(d.getDate()+n); return d.toISOString().split('T')[0]; };
+
+const SEED_ORGS = [
+  {id:'org-1',nome:'Bar do Léo',cidade:'Porto Feliz',estado:'SP',plano:'pro',ativo:true,instagram:'@bardoleo'},
+  {id:'org-2',nome:'Espaço Samba Vivo',cidade:'Porto Feliz',estado:'SP',plano:'gratis',ativo:true,instagram:'@sambavivo'},
+  {id:'org-3',nome:'Orla do Tietê',cidade:'Porto Feliz',estado:'SP',plano:'gratis',ativo:true,instagram:'@orlatietê'},
+];
+const SEED_EV = [
+  {id:'ev-1',nome:'Pagode no Coreto',organizador_nome:'Praça Coronel Almeida',data_inicio:add(0),hora_inicio:'19:00',tipo_ingresso:'gratuito',preco:null,status:'publicado'},
+  {id:'ev-2',nome:'Roda de samba do Léo',organizador_nome:'Bar do Léo',data_inicio:add(1),hora_inicio:'21:00',tipo_ingresso:'pago',preco:15,status:'publicado'},
+  {id:'ev-3',nome:'Samba às margens do Tietê',organizador_nome:'Orla do Rio Tietê',data_inicio:add(2),hora_inicio:'17:00',tipo_ingresso:'gratuito',preco:null,status:'publicado'},
+  {id:'ev-4',nome:'Partido alto na Vila',organizador_nome:'Associação Recreativa',data_inicio:add(3),hora_inicio:'20:00',tipo_ingresso:'pago',preco:10,status:'rascunho'},
+  {id:'ev-5',nome:'Pagode Monções',organizador_nome:'Espaço das Monções',data_inicio:add(5),hora_inicio:'20:30',tipo_ingresso:'pago',preco:20,status:'publicado'},
+  {id:'ev-6',nome:'Noite do cavaquinho',organizador_nome:'Boteco do Tião',data_inicio:add(0),hora_inicio:'20:00',tipo_ingresso:'gratuito',preco:null,status:'publicado'},
+  {id:'ev-7',nome:'Samba de raiz no Bambuzal',organizador_nome:'Chácara Bambuzal',data_inicio:add(1),hora_inicio:'18:00',tipo_ingresso:'pago',preco:25,status:'encerrado'},
+];
+
+// ── Load all ──
+async function loadAll(){
+  const client = getClient();
+  if(client){
+    try{
+      const [evRes, orgRes] = await Promise.all([
+        client.from('eventos').select('*, organizadores(nome)').order('data_inicio'),
+        client.from('organizadores').select('*').order('nome'),
+      ]);
+      allEventos = (evRes.data||[]).map(e=>({...e, organizador_nome: e.organizadores?.nome||'—'}));
+      allOrgs    = orgRes.data||[];
+    }catch(err){
+      console.warn('Supabase:', err.message);
+      allEventos = SEED_EV; allOrgs = SEED_ORGS;
+    }
+  } else {
+    allEventos = SEED_EV; allOrgs = SEED_ORGS;
+  }
+  renderDashboard();
+  renderEvTable(allEventos);
+  renderOrgTable(allOrgs);
+}
+
+// ── DASHBOARD ──
+function renderDashboard(){
+  const ativos  = allEventos.filter(e=>e.status==='publicado');
+  const hoje    = allEventos.filter(e=>e.data_inicio===todayStr&&e.status==='publicado');
+  const pro     = allOrgs.filter(o=>o.plano==='pro');
+  document.getElementById('m-eventos').textContent = ativos.length;
+  document.getElementById('m-orgs').textContent    = allOrgs.length;
+  document.getElementById('m-hoje').textContent    = hoje.length;
+  document.getElementById('m-pro').textContent     = pro.length;
+
+  // Próximos eventos (tabela)
+  const prox = allEventos.filter(e=>e.status==='publicado').slice(0,5);
+  document.getElementById('dash-events-body').innerHTML = prox.map(e=>`
+    <tr>
+      <td style="font-weight:500;color:var(--cream);">${e.nome}</td>
+      <td>${e.organizador_nome}</td>
+      <td>${fmtDate(e.data_inicio)}</td>
+      <td>${fmtIngresso(e.tipo_ingresso,e.preco)}</td>
+      <td>${statusBadge(e.status)}</td>
+    </tr>`).join('') || '<tr><td colspan="5" style="text-align:center;color:var(--muted);padding:24px;">Nenhum evento</td></tr>';
+
+  // Chart de visualizações simuladas
+  const days=['Dom','Seg','Ter','Qua','Qui','Sex','Sáb'];
+  const vals=[24,38,15,42,60,88,71];
+  const max=Math.max(...vals);
+  document.getElementById('chart-bars').innerHTML = vals.map((v,i)=>`
+    <div class="chart-bar" style="height:${Math.round((v/max)*72)+8}px;background:rgba(232,135,42,${.12+.22*(v/max)});">
+      <span class="chart-bar-val">${v}</span>
+      <span>${days[i]}</span>
+    </div>`).join('');
+}
+
+// ── EVENTOS TABLE ──
+function renderEvTable(list){
+  document.getElementById('ev-table-body').innerHTML = list.map(e=>`
+    <tr>
+      <td style="font-weight:500;color:var(--cream);">${e.nome}</td>
+      <td>${e.organizador_nome||'—'}</td>
+      <td>${fmtDate(e.data_inicio)}</td>
+      <td>${fmtIngresso(e.tipo_ingresso,e.preco)}</td>
+      <td>${statusBadge(e.status)}</td>
+      <td><div class="td-actions">
+        <button class="btn btn-ghost btn-sm" onclick='editEvento(${JSON.stringify(e)})'>Editar</button>
+        <button class="btn btn-danger btn-sm" onclick="confirmDelete('evento','${e.id}','${e.nome.replace(/'/g,"\\'")}')">Excluir</button>
+      </div></td>
+    </tr>`).join('') || '<tr><td colspan="6" style="text-align:center;color:var(--muted);padding:24px;">Nenhum evento encontrado</td></tr>';
+}
+
+function filterEvTable(q){
+  const f = allEventos.filter(e =>
+    e.nome.toLowerCase().includes(q.toLowerCase()) ||
+    (e.organizador_nome||'').toLowerCase().includes(q.toLowerCase()));
+  renderEvTable(f);
+}
+
+// ── ORGS TABLE ──
+function renderOrgTable(list){
+  document.getElementById('org-table-body').innerHTML = list.map(o=>`
+    <tr>
+      <td style="font-weight:500;color:var(--cream);">${o.nome}</td>
+      <td>${o.cidade||'—'}, ${o.estado||''}</td>
+      <td><span class="badge ${o.plano==='pro'?'badge-pro':'badge-free'}">${o.plano==='pro'?'Pro':'Grátis'}</span></td>
+      <td style="color:var(--muted);">${(o.estilos||[]).join(', ')||'—'}</td>
+      <td><div class="td-actions">
+        <button class="btn btn-ghost btn-sm" onclick='editOrg(${JSON.stringify(o)})'>Editar</button>
+        <button class="btn btn-danger btn-sm" onclick="confirmDelete('org','${o.id}','${o.nome.replace(/'/g,"\\'")}')">Excluir</button>
+      </div></td>
+    </tr>`).join('') || '<tr><td colspan="5" style="text-align:center;color:var(--muted);padding:24px;">Nenhum organizador</td></tr>';
+}
+
+function filterOrgTable(q){
+  const f = allOrgs.filter(o =>
+    o.nome.toLowerCase().includes(q.toLowerCase()) ||
+    (o.cidade||'').toLowerCase().includes(q.toLowerCase()));
+  renderOrgTable(f);
+}
+
+// ── MODAL EVENTO ──
+function openModalEvento(){
+  document.getElementById('ev-id').value = '';
+  document.getElementById('ev-nome').value = '';
+  document.getElementById('ev-data').value = '';
+  document.getElementById('ev-inicio').value = '20:00';
+  document.getElementById('ev-fim').value = '23:00';
+  document.getElementById('ev-tipo-ing').value = 'gratuito';
+  document.getElementById('ev-preco').value = '';
+  document.getElementById('ev-img').value = '';
+  document.getElementById('ev-desc').value = '';
+  document.getElementById('ev-status').value = 'publicado';
+  document.getElementById('ev-rec').value = 'unico';
+  document.querySelectorAll('#estilos-check input').forEach(c => c.checked = false);
+  // Popula orgs
+  const sel = document.getElementById('ev-org');
+  sel.innerHTML = '<option value="">Selecione...</option>' +
+    allOrgs.map(o=>`<option value="${o.id}">${o.nome}</option>`).join('');
+  document.getElementById('modal-ev-title').textContent = 'Novo evento';
+  document.getElementById('campo-preco').style.display = 'none';
+  openModal('modal-evento');
+}
+
+function editEvento(ev){
+  document.getElementById('ev-id').value    = ev.id;
+  document.getElementById('ev-nome').value  = ev.nome||'';
+  document.getElementById('ev-data').value  = ev.data_inicio||'';
+  document.getElementById('ev-inicio').value= ev.hora_inicio||'20:00';
+  document.getElementById('ev-status').value= ev.status||'publicado';
+  document.getElementById('ev-rec').value   = ev.recorrencia||'unico';
+  document.getElementById('ev-tipo-ing').value = ev.tipo_ingresso||'gratuito';
+  document.getElementById('ev-preco').value = ev.preco||'';
+  document.getElementById('ev-img').value   = ev.foto_url||'';
+  document.getElementById('ev-desc').value  = ev.descricao||'';
+  const sel = document.getElementById('ev-org');
+  sel.innerHTML = '<option value="">Selecione...</option>' +
+    allOrgs.map(o=>`<option value="${o.id}" ${o.id===ev.organizador_id?'selected':''}>${o.nome}</option>`).join('');
+  document.querySelectorAll('#estilos-check input').forEach(c => {
+    c.checked = (ev.estilos||[]).includes(c.value);
+  });
+  togglePreco();
+  document.getElementById('modal-ev-title').textContent = 'Editar evento';
+  openModal('modal-evento');
+}
+
+function togglePreco(){
+  const t = document.getElementById('ev-tipo-ing').value;
+  document.getElementById('campo-preco').style.display = t==='pago' ? 'block' : 'none';
+}
+
+async function saveEvento(){
+  const nome = document.getElementById('ev-nome').value.trim();
+  const data = document.getElementById('ev-data').value;
+  if(!nome || !data){ toast('Preencha nome e data.', true); return; }
+
+  const estilos = [...document.querySelectorAll('#estilos-check input:checked')].map(c=>c.value);
+  const payload = {
+    nome, data_inicio: data,
+    hora_inicio: document.getElementById('ev-inicio').value,
+    hora_fim:    document.getElementById('ev-fim').value,
+    recorrencia: document.getElementById('ev-rec').value,
+    tipo_ingresso: document.getElementById('ev-tipo-ing').value,
+    preco:       document.getElementById('ev-preco').value || null,
+    foto_url:    document.getElementById('ev-img').value || null,
+    descricao:   document.getElementById('ev-desc').value,
+    status:      document.getElementById('ev-status').value,
+    organizador_id: document.getElementById('ev-org').value || null,
+    estilos,
+  };
+
+  const id = document.getElementById('ev-id').value;
+  const client = getClient();
+  if(client){
+    const q = id
+      ? client.from('eventos').update(payload).eq('id',id)
+      : client.from('eventos').insert(payload);
+    const {error} = await q;
+    if(error){ toast('Erro: '+error.message, true); return; }
+  }
+
+  // Atualiza local
+  if(id){
+    const idx = allEventos.findIndex(e=>e.id===id);
+    if(idx>=0) allEventos[idx]={...allEventos[idx],...payload};
+  } else {
+    allEventos.unshift({...payload, id:'ev-'+Date.now(), organizador_nome: allOrgs.find(o=>o.id===payload.organizador_id)?.nome||'—'});
+  }
+  closeModal('modal-evento');
+  renderEvTable(allEventos);
+  renderDashboard();
+  toast(id ? '✓ Evento atualizado' : '✓ Evento criado');
+}
+
+// ── MODAL ORG ──
+function openModalOrg(){
+  document.getElementById('org-id').value      = '';
+  document.getElementById('org-nome').value    = '';
+  document.getElementById('org-endereco').value= '';
+  document.getElementById('org-cidade').value  = '';
+  document.getElementById('org-estado').value  = 'SP';
+  document.getElementById('org-lat').value     = '';
+  document.getElementById('org-lng').value     = '';
+  document.getElementById('org-insta').value   = '';
+  document.getElementById('org-email').value   = '';
+  document.getElementById('org-desc').value    = '';
+  document.getElementById('org-plano').value   = 'gratis';
+  document.getElementById('org-ativo').value   = 'true';
+  document.getElementById('modal-org-title').textContent = 'Novo organizador';
+  openModal('modal-org');
+}
+
+function editOrg(org){
+  document.getElementById('org-id').value      = org.id;
+  document.getElementById('org-nome').value    = org.nome||'';
+  document.getElementById('org-endereco').value= org.endereco||'';
+  document.getElementById('org-cidade').value  = org.cidade||'';
+  document.getElementById('org-estado').value  = org.estado||'SP';
+  document.getElementById('org-lat').value     = org.lat||'';
+  document.getElementById('org-lng').value     = org.lng||'';
+  document.getElementById('org-insta').value   = org.instagram||'';
+  document.getElementById('org-email').value   = org.email||'';
+  document.getElementById('org-desc').value    = org.descricao||'';
+  document.getElementById('org-plano').value   = org.plano||'gratis';
+  document.getElementById('org-ativo').value   = org.ativo ? 'true' : 'false';
+  document.getElementById('modal-org-title').textContent = 'Editar organizador';
+  openModal('modal-org');
+}
+
+async function saveOrg(){
+  const nome = document.getElementById('org-nome').value.trim();
+  if(!nome){ toast('Informe o nome do espaço.', true); return; }
+
+  const payload = {
+    nome,
+    endereco:  document.getElementById('org-endereco').value,
+    cidade:    document.getElementById('org-cidade').value,
+    estado:    document.getElementById('org-estado').value,
+    lat:       parseFloat(document.getElementById('org-lat').value)||null,
+    lng:       parseFloat(document.getElementById('org-lng').value)||null,
+    instagram: document.getElementById('org-insta').value,
+    email:     document.getElementById('org-email').value,
+    descricao: document.getElementById('org-desc').value,
+    plano:     document.getElementById('org-plano').value,
+    ativo:     document.getElementById('org-ativo').value === 'true',
+    slug:      nome.toLowerCase().replace(/\s+/g,'-').replace(/[^a-z0-9-]/g,''),
+  };
+
+  const id = document.getElementById('org-id').value;
+  const client = getClient();
+  if(client){
+    const q = id
+      ? client.from('organizadores').update(payload).eq('id',id)
+      : client.from('organizadores').insert(payload);
+    const {error} = await q;
+    if(error){ toast('Erro: '+error.message, true); return; }
+  }
+
+  if(id){
+    const idx = allOrgs.findIndex(o=>o.id===id);
+    if(idx>=0) allOrgs[idx]={...allOrgs[idx],...payload};
+  } else {
+    allOrgs.unshift({...payload, id:'org-'+Date.now()});
+  }
+  closeModal('modal-org');
+  renderOrgTable(allOrgs);
+  renderDashboard();
+  toast(id ? '✓ Organizador atualizado' : '✓ Organizador criado');
+}
+
+// ── CONFIRM DELETE ──
+function confirmDelete(tipo, id, nome){
+  document.getElementById('confirm-msg').textContent =
+    `Tem certeza que deseja excluir "${nome}"? Esta ação não pode ser desfeita.`;
+  document.getElementById('confirm-ok-btn').onclick = () => doDelete(tipo, id);
+  openModal('modal-confirm');
+}
+
+async function doDelete(tipo, id){
+  const client = getClient();
+  if(client){
+    const tbl = tipo==='evento' ? 'eventos' : 'organizadores';
+    const {error} = await client.from(tbl).delete().eq('id',id);
+    if(error){ toast('Erro: '+error.message, true); closeModal('modal-confirm'); return; }
+  }
+  if(tipo==='evento'){
+    allEventos = allEventos.filter(e=>e.id!==id);
+    renderEvTable(allEventos);
+  } else {
+    allOrgs = allOrgs.filter(o=>o.id!==id);
+    renderOrgTable(allOrgs);
+  }
+  renderDashboard();
+  closeModal('modal-confirm');
+  toast('✓ Excluído com sucesso');
+}
+
+// ── MODAL HELPERS ──
+function openModal(id){ document.getElementById(id).classList.add('open'); }
+function closeModal(id){ document.getElementById(id).classList.remove('open'); }
+
+// Fecha modal clicando fora
+document.querySelectorAll('.modal-overlay').forEach(o => {
+  o.addEventListener('click', e => { if(e.target===o) o.classList.remove('open'); });
+});
+</script>
+</body>
+</html>
