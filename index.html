@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="description" content="Encontre eventos de samba perto de você."/>
+  <meta name="theme-color" content="#0D0A07"/>
+  <title>Onde Tem Samba</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+  <link rel="stylesheet" href="style.css"/>
+</head>
+<body>
+
+<div id="map"></div>
+<div id="overlay"></div>
+
+<div id="topbar">
+  <div class="brand">
+    <div class="brand-dot">
+      <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" width="14" height="14">
+        <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
+      </svg>
+    </div>
+    <div class="brand-name">onde tem <em>samba</em></div>
+  </div>
+
+  <div class="pipe"></div>
+
+  <div class="search-wrap">
+    <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="rgba(244,235,216,.35)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="11" cy="11" r="7"/><line x1="16.5" y1="16.5" x2="22" y2="22"/>
+    </svg>
+    <input id="searchbox" type="text" placeholder="Buscar evento" autocomplete="off" spellcheck="false"/>
+  </div>
+
+  <div class="pipe pipe-filters"></div>
+
+  <div id="filters">
+    <button class="fb on"  data-filter="todos">Todos</button>
+    <button class="fb"     data-filter="hoje">Hoje</button>
+    <button class="fb"     data-filter="fds">Fim de semana</button>
+  </div>
+</div>
+
+<div id="filters-mobile">
+  <button class="fb on"  data-filter="todos">Todos</button>
+  <button class="fb"     data-filter="hoje">Hoje</button>
+  <button class="fb"     data-filter="fds">Fim de semana</button>
+</div>
+
+<div id="detail">
+  <div id="detail-img-wrap">
+    <div id="detail-img-slot"></div>
+    <div id="detail-tags"></div>
+    <button id="detail-close" aria-label="Fechar">
+      <svg viewBox="0 0 24 24" width="12" height="12" stroke="#F4EBD8" stroke-width="2.2" fill="none">
+        <line x1="18" y1="6" x2="6" y2="18"/>
+        <line x1="6" y1="6" x2="18" y2="18"/>
+      </svg>
+    </button>
+  </div>
+  <div id="detail-body">
+    <div id="detail-header">
+      <div id="detail-name"></div>
+      <span id="detail-badge"></span>
+    </div>
+    <div id="detail-meta"></div>
+    <div id="detail-hr"></div>
+    <button id="detail-btn">Tenho interesse</button>
+  </div>
+</div>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script src="config.js"></script>
+<script src="db.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

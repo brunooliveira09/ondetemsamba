@@ -1,0 +1,8 @@
+# Nunca suba credenciais reais
+# config.js contém as chaves do Supabase — ok para subir pois usa anon key pública
+# mas se criar um .env.local, não suba:
+.env
+.env.local
+.env*.local
+node_modules/
+.DS_Store
