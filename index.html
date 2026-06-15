@@ -3,133 +3,196 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
-<meta name="description" content="Encontre eventos de samba em Porto Feliz."/>
-<meta name="theme-color" content="#0D0A07"/>
-<title>Onde Tem Samba — Porto Feliz</title>
+<title>Onde Tem Samba</title>
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap');
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
-html,body{width:100%;height:100%;overflow:hidden;background:#0D0A07;font-family:'Space Grotesk',sans-serif;}
+:root{
+  --amber:#E8872A;--amber2:#F5A94A;--ink:#0D0A07;--cream:#F4EBD8;
+  --muted:rgba(244,235,216,.48);--border:rgba(232,135,42,.2);--glow:rgba(232,135,42,.3);
+  --card-bg:rgba(14,8,3,.97);--overlay-bg:rgba(0,0,0,.55);
+}
+html,body{width:100%;height:100%;overflow:hidden;background:var(--ink);font-family:'Space Grotesk',sans-serif;}
 body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
   background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,.04) 2px,rgba(0,0,0,.04) 4px);}
 
+/* MAP */
 #map{position:fixed;top:0;left:0;width:100%;height:100%;z-index:1;}
-.leaflet-container{background:#0D0A07!important;}
-.leaflet-tile-pane{filter:grayscale(100%) brightness(32%) sepia(45%);}
-
-/* Zoom */
-.leaflet-bottom.leaflet-right{bottom:20px;right:16px;}
+.leaflet-container{background:var(--ink)!important;}
+.leaflet-tile-pane{filter:grayscale(100%) brightness(32%) sepia(45%);transition:filter .6s;}
+.day-mode .leaflet-tile-pane{filter:saturate(80%) brightness(100%);transition:filter .6s;}
+.leaflet-bottom.leaflet-right{bottom:76px;right:14px;}
 .leaflet-control-zoom{border:1px solid rgba(232,135,42,.35)!important;border-radius:8px!important;overflow:hidden;box-shadow:0 0 14px rgba(232,135,42,.12)!important;}
-.leaflet-control-zoom a{width:32px!important;height:32px!important;line-height:32px!important;background:rgba(13,10,7,.9)!important;color:#E8872A!important;font-size:18px!important;font-weight:300!important;border-bottom:1px solid rgba(232,135,42,.2)!important;display:flex!important;align-items:center;justify-content:center;transition:background .15s;}
+.leaflet-control-zoom a{width:32px!important;height:32px!important;line-height:32px!important;background:rgba(13,10,7,.9)!important;color:#E8872A!important;font-size:18px!important;font-weight:300!important;border-bottom:1px solid rgba(232,135,42,.2)!important;display:flex!important;align-items:center;justify-content:center;}
 .leaflet-control-zoom a:last-child{border-bottom:none!important;}
 .leaflet-control-zoom a:hover{background:rgba(232,135,42,.2)!important;}
 .leaflet-control-attribution{background:rgba(13,10,7,.55)!important;color:rgba(244,235,216,.28)!important;font-size:10px!important;}
-.leaflet-control-attribution a{color:rgba(232,135,42,.45)!important;}
 
 /* TOPBAR */
-#topbar{position:fixed;top:14px;left:14px;right:14px;z-index:900;height:62px;
-  background:rgba(13,10,7,.55);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
-  border-radius:10px;padding:0 18px;display:flex;align-items:center;gap:0;}
-.brand{display:flex;align-items:center;gap:9px;flex-shrink:0;padding-right:18px;}
-.brand-dot{width:28px;height:28px;border-radius:50%;background:#E8872A;
-  display:flex;align-items:center;justify-content:center;
-  box-shadow:0 0 12px rgba(232,135,42,.5);flex-shrink:0;}
-.brand-name{font-size:14px;font-weight:700;color:#F4EBD8;letter-spacing:.04em;white-space:nowrap;}
+#topbar{position:fixed;top:14px;left:14px;right:14px;z-index:900;height:56px;
+  background:rgba(13,10,7,.58);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
+  border-radius:12px;padding:0 16px;display:flex;align-items:center;gap:0;}
+.brand{display:flex;align-items:center;gap:8px;flex-shrink:0;padding-right:16px;}
+.brand-dot{width:26px;height:26px;border-radius:50%;background:#E8872A;display:flex;align-items:center;justify-content:center;box-shadow:0 0 10px var(--glow);flex-shrink:0;}
+.brand-name{font-size:13px;font-weight:700;color:#F4EBD8;letter-spacing:.03em;white-space:nowrap;}
 .brand-name em{color:#E8872A;font-style:normal;}
-.pipe{width:1px;height:22px;background:rgba(232,135,42,.28);flex-shrink:0;}
-
-/* Search + filtros juntos */
-.search-filter-wrap{flex:1;display:flex;align-items:center;gap:8px;padding:0 14px;min-width:0;}
-.search-filter-wrap svg{flex-shrink:0;}
-#searchbox{background:transparent;border:none;outline:none;
-  font-size:13px;color:#F4EBD8;font-family:'Space Grotesk',sans-serif;letter-spacing:.02em;
-  min-width:0;width:120px;}
+.pipe{width:1px;height:20px;background:rgba(232,135,42,.25);flex-shrink:0;}
+.search-filter-wrap{flex:1;display:flex;align-items:center;gap:7px;padding:0 12px;min-width:0;}
+#searchbox{flex:1;min-width:0;background:transparent;border:none;outline:none;font-size:12px;color:#F4EBD8;font-family:'Space Grotesk',sans-serif;}
 #searchbox::placeholder{color:rgba(244,235,216,.28);}
-.filter-divider{width:1px;height:18px;background:rgba(232,135,42,.2);flex-shrink:0;margin:0 4px;}
-#filters{display:flex;align-items:center;gap:5px;flex-shrink:0;}
-.fb{background:transparent;border:1px solid rgba(232,135,42,.25);color:rgba(244,235,216,.5);
-  padding:4px 12px;border-radius:20px;font-size:11px;cursor:pointer;
-  font-family:'Space Grotesk',sans-serif;white-space:nowrap;transition:all .15s;letter-spacing:.04em;}
+.filter-divider{width:1px;height:16px;background:rgba(232,135,42,.2);flex-shrink:0;margin:0 2px;}
+#filters{display:flex;align-items:center;gap:4px;flex-shrink:0;}
+.fb{background:transparent;border:1px solid rgba(232,135,42,.22);color:rgba(244,235,216,.5);padding:4px 11px;border-radius:20px;font-size:11px;cursor:pointer;font-family:'Space Grotesk',sans-serif;white-space:nowrap;transition:all .15s;letter-spacing:.03em;}
 .fb:hover{border-color:rgba(232,135,42,.6);color:#F4EBD8;}
-.fb.on{background:#E8872A;color:#0D0A07;border-color:#E8872A;font-weight:700;box-shadow:0 0 10px rgba(232,135,42,.35);}
+.fb.on{background:#E8872A;color:#0D0A07;border-color:#E8872A;font-weight:700;}
 
-/* MOBILE */
-#filters-mobile{display:none;position:fixed;top:84px;left:14px;right:14px;z-index:890;
-  padding:8px 12px;background:rgba(13,10,7,.82);backdrop-filter:blur(10px);
-  border-radius:10px;gap:6px;flex-wrap:wrap;justify-content:center;}
+/* THEME TOGGLE */
+#theme-btn{position:fixed;bottom:20px;right:14px;z-index:900;width:40px;height:40px;border-radius:50%;background:rgba(13,10,7,.88);border:1px solid rgba(232,135,42,.35);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:18px;box-shadow:0 0 14px rgba(232,135,42,.15);transition:all .2s;}
+#theme-btn:hover{background:rgba(232,135,42,.2);}
+
+/* MOBILE FILTERS */
+#filters-mobile{display:none;position:fixed;top:78px;left:14px;right:14px;z-index:890;padding:8px 12px;background:rgba(13,10,7,.85);backdrop-filter:blur(10px);border-radius:10px;gap:6px;flex-wrap:wrap;justify-content:center;}
 @media(max-width:600px){
-  #topbar{height:54px;padding:0 12px;top:10px;left:10px;right:10px;}
-  #filters{display:none;}
-  .filter-divider{display:none;}
-  #filters-mobile{display:flex;top:72px;left:10px;right:10px;}
-  .brand-name{font-size:12px;}
-  #searchbox{width:80px;}
+  #topbar{height:52px;padding:0 12px;top:10px;left:10px;right:10px;}
+  #filters{display:none;}.filter-divider{display:none;}
+  #filters-mobile{display:flex;top:70px;left:10px;right:10px;}
+  .brand-name{font-size:12px;}#searchbox{font-size:11px;}
+  #theme-btn{bottom:14px;right:10px;}
 }
 
 /* OVERLAY */
-#overlay{position:fixed;inset:0;z-index:950;background:rgba(0,0,0,.52);
-  opacity:0;pointer-events:none;transition:opacity .22s;}
+#overlay{position:fixed;inset:0;z-index:950;background:var(--overlay-bg);opacity:0;pointer-events:none;transition:opacity .25s;}
 #overlay.on{opacity:1;pointer-events:all;}
 
-/* DETAIL BOX */
-#detail{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%) scale(.88);
-  z-index:1000;width:318px;background:rgba(16,9,3,.97);
-  border:1px solid rgba(232,135,42,.4);border-radius:14px;overflow:hidden;
-  box-shadow:0 0 48px rgba(232,135,42,.18),0 20px 52px rgba(0,0,0,.75);
-  opacity:0;pointer-events:none;transition:opacity .22s,transform .22s cubic-bezier(.34,1.36,.64,1);}
-#detail.open{opacity:1;pointer-events:all;transform:translate(-50%,-50%) scale(1);}
+/* ═══════════════════════════════════════
+   DETAIL CARD — redesenhado
+═══════════════════════════════════════ */
+#detail{
+  position:fixed;bottom:0;left:0;right:0;
+  z-index:1000;
+  background:var(--card-bg);
+  border-radius:20px 20px 0 0;
+  border-top:1px solid var(--border);
+  box-shadow:0 -8px 48px rgba(0,0,0,.7);
+  max-height:92vh;
+  display:flex;flex-direction:column;
+  transform:translateY(100%);
+  transition:transform .3s cubic-bezier(.34,1.1,.64,1);
+}
+#detail.open{transform:translateY(0);}
 
-#detail-img-wrap{position:relative;width:100%;height:158px;overflow:hidden;}
-#detail-img{width:100%;height:158px;object-fit:cover;display:block;filter:saturate(65%) brightness(82%);}
-.detail-gen-img{width:100%;height:158px;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;}
-#detail-img-wrap::after{content:'';position:absolute;inset:0;pointer-events:none;z-index:2;
-  background:repeating-linear-gradient(0deg,transparent,transparent 3px,rgba(0,0,0,.09) 3px,rgba(0,0,0,.09) 4px);}
-#detail-img-wrap::before{content:'';position:absolute;bottom:0;left:0;right:0;height:52px;z-index:3;
-  pointer-events:none;background:linear-gradient(transparent,rgba(16,9,3,.97));}
-#detail-tags{position:absolute;bottom:9px;left:13px;z-index:4;display:flex;gap:5px;flex-wrap:wrap;}
-.dtag{font-size:10px;padding:2px 8px;border-radius:8px;background:#E8872A;color:#0D0A07;
-  font-weight:700;letter-spacing:.04em;box-shadow:0 0 7px rgba(232,135,42,.5);}
-#detail-close{position:absolute;top:10px;right:10px;z-index:5;width:26px;height:26px;
-  border-radius:50%;background:rgba(13,10,7,.72);border:1px solid rgba(232,135,42,.3);
-  cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .15s;}
+/* drag handle */
+#drag-handle{flex-shrink:0;padding:10px 0 4px;display:flex;justify-content:center;cursor:grab;}
+#drag-handle::before{content:'';width:36px;height:3px;background:rgba(232,135,42,.3);border-radius:2px;}
+
+/* scrollable body */
+#detail-scroll{overflow-y:auto;flex:1;-webkit-overflow-scrolling:touch;}
+
+/* CARROSSEL */
+#carousel-wrap{position:relative;width:100%;height:220px;overflow:hidden;flex-shrink:0;}
+.carousel-img{position:absolute;inset:0;object-fit:cover;width:100%;height:100%;opacity:0;transition:opacity .4s;filter:saturate(65%) brightness(80%);}
+.carousel-img.active{opacity:1;}
+.carousel-placeholder{width:100%;height:220px;background:linear-gradient(135deg,#2A1005,#5C3214);display:flex;align-items:center;justify-content:center;font-size:52px;}
+/* scanlines */
+#carousel-wrap::after{content:'';position:absolute;inset:0;pointer-events:none;z-index:2;background:repeating-linear-gradient(0deg,transparent,transparent 3px,rgba(0,0,0,.08) 3px,rgba(0,0,0,.08) 4px);}
+/* gradient bottom */
+#carousel-wrap::before{content:'';position:absolute;bottom:0;left:0;right:0;height:80px;z-index:3;pointer-events:none;background:linear-gradient(transparent,var(--card-bg));}
+/* dots */
+#carousel-dots{position:absolute;bottom:14px;left:50%;transform:translateX(-50%);z-index:4;display:flex;gap:5px;}
+.cdot{width:5px;height:5px;border-radius:50%;background:rgba(244,235,216,.3);cursor:pointer;transition:all .2s;}
+.cdot.on{background:#E8872A;width:14px;border-radius:3px;}
+/* prev/next */
+.carousel-btn{position:absolute;top:50%;transform:translateY(-50%);z-index:4;width:30px;height:30px;background:rgba(13,10,7,.6);border:1px solid rgba(232,135,42,.3);border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center;color:#E8872A;font-size:14px;transition:all .15s;}
+.carousel-btn:hover{background:rgba(232,135,42,.2);}
+#c-prev{left:10px;}#c-next{right:10px;}
+/* tags over carousel */
+#detail-tags{position:absolute;bottom:20px;left:14px;z-index:5;display:flex;gap:5px;flex-wrap:wrap;}
+.dtag{font-size:10px;padding:2px 8px;border-radius:8px;background:#E8872A;color:#0D0A07;font-weight:700;letter-spacing:.04em;box-shadow:0 0 7px var(--glow);}
+/* close */
+#detail-close{position:absolute;top:12px;right:12px;z-index:6;width:28px;height:28px;border-radius:50%;background:rgba(13,10,7,.7);border:1px solid rgba(232,135,42,.3);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .15s;}
 #detail-close:hover{background:rgba(232,135,42,.2);border-color:#E8872A;}
 
-#detail-body{padding:15px 16px;}
-#detail-header{display:flex;justify-content:space-between;align-items:flex-start;gap:8px;margin-bottom:11px;}
-#detail-name{font-size:14px;font-weight:700;color:#F4EBD8;line-height:1.25;}
-#detail-badge{font-size:10px;padding:3px 8px;border-radius:8px;flex-shrink:0;margin-top:2px;
-  background:rgba(232,135,42,.14);color:#E8872A;border:1px solid rgba(232,135,42,.3);
-  font-weight:600;letter-spacing:.05em;white-space:nowrap;}
-#detail-meta{display:grid;grid-template-columns:1fr 1fr;gap:7px 10px;margin-bottom:14px;}
-.dm{display:flex;align-items:flex-start;gap:6px;font-size:11px;color:rgba(244,235,216,.48);}
-.dm svg{width:13px;height:13px;stroke:#E8872A;fill:none;flex-shrink:0;margin-top:1px;
-  stroke-width:2;stroke-linecap:round;stroke-linejoin:round;}
-.dm span{color:rgba(244,235,216,.8);line-height:1.3;}
-#detail-hr{height:1px;background:rgba(232,135,42,.14);margin-bottom:13px;}
+/* LOCAL HEADER */
+#local-header{padding:16px 16px 0;display:flex;align-items:flex-start;gap:12px;}
+#local-logo-wrap{width:48px;height:48px;border-radius:10px;overflow:hidden;flex-shrink:0;border:1px solid var(--border);}
+#local-logo{width:100%;height:100%;object-fit:cover;}
+#local-logo-placeholder{width:100%;height:100%;background:rgba(232,135,42,.15);display:flex;align-items:center;justify-content:center;font-size:20px;}
+#local-info{flex:1;min-width:0;}
+#local-name{font-size:16px;font-weight:700;color:#F4EBD8;line-height:1.2;margin-bottom:3px;}
+#local-sub{font-size:11px;color:var(--muted);margin-bottom:5px;}
+#local-rating{display:flex;align-items:center;gap:5px;}
+.stars{display:flex;gap:1px;}
+.star{color:#E8872A;font-size:13px;}
+.star.empty{color:rgba(232,135,42,.2);}
+#rating-val{font-size:12px;font-weight:600;color:#F4EBD8;}
+#rating-ct{font-size:11px;color:var(--muted);}
 
-/* Botão compartilhar */
-#detail-share{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:10px;
-  background:transparent;color:#E8872A;border:1px solid rgba(232,135,42,.4);
-  border-radius:8px;font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;
-  cursor:pointer;font-family:'Space Grotesk',sans-serif;transition:all .15s;}
-#detail-share:hover{background:rgba(232,135,42,.12);border-color:#E8872A;}
-#detail-share svg{width:14px;height:14px;stroke:#E8872A;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;}
+/* DIVIDER */
+.section-divider{height:1px;background:rgba(232,135,42,.1);margin:14px 16px;}
 
-/* Toast */
-#toast{position:fixed;bottom:32px;left:50%;transform:translateX(-50%) translateY(20px);
-  z-index:2000;background:rgba(232,135,42,.95);color:#0D0A07;
-  padding:9px 20px;border-radius:20px;font-size:12px;font-weight:700;letter-spacing:.04em;
-  opacity:0;pointer-events:none;transition:all .25s;white-space:nowrap;}
+/* EVENTO HEADER */
+#ev-header{padding:0 16px;}
+#ev-nome{font-size:18px;font-weight:700;color:#F4EBD8;line-height:1.2;margin-bottom:6px;}
+#ev-badge{display:inline-block;font-size:10px;padding:3px 9px;border-radius:8px;background:rgba(232,135,42,.14);color:#E8872A;border:1px solid rgba(232,135,42,.3);font-weight:600;letter-spacing:.05em;margin-bottom:12px;}
+
+/* META GRID */
+#ev-meta{padding:0 16px;display:grid;grid-template-columns:1fr 1fr;gap:8px 10px;margin-bottom:14px;}
+.dm{display:flex;align-items:flex-start;gap:6px;font-size:11px;color:rgba(244,235,216,.45);}
+.dm svg{width:14px;height:14px;stroke:#E8872A;fill:none;flex-shrink:0;margin-top:1px;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;}
+.dm span{color:rgba(244,235,216,.82);line-height:1.3;}
+
+/* MINI MAP */
+#mini-map-section{padding:0 16px 14px;}
+#mini-map-section h4{font-size:11px;color:var(--muted);letter-spacing:.06em;text-transform:uppercase;margin-bottom:8px;}
+#mini-map{height:110px;border-radius:10px;overflow:hidden;border:1px solid var(--border);}
+.leaflet-control-attribution{display:none!important;}
+#address-row{display:flex;align-items:center;gap:8px;margin-top:8px;}
+#address-text{flex:1;font-size:12px;color:rgba(244,235,216,.7);line-height:1.4;}
+.addr-btn{padding:5px 11px;border-radius:8px;font-size:11px;font-weight:600;cursor:pointer;border:1px solid rgba(232,135,42,.3);background:transparent;color:#E8872A;font-family:'Space Grotesk',sans-serif;white-space:nowrap;transition:all .15s;display:flex;align-items:center;gap:4px;}
+.addr-btn:hover{background:rgba(232,135,42,.12);}
+.addr-btn svg{width:12px;height:12px;stroke:#E8872A;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;}
+
+/* ACTION BUTTONS */
+#action-row{padding:0 16px;display:flex;gap:8px;margin-bottom:14px;}
+.action-btn{flex:1;padding:10px 8px;border-radius:10px;font-size:11px;font-weight:700;cursor:pointer;border:1px solid var(--border);background:rgba(232,135,42,.06);color:#E8872A;font-family:'Space Grotesk',sans-serif;display:flex;flex-direction:column;align-items:center;gap:4px;transition:all .15s;letter-spacing:.03em;}
+.action-btn svg{width:18px;height:18px;stroke:#E8872A;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;}
+.action-btn:hover{background:rgba(232,135,42,.14);border-color:rgba(232,135,42,.5);}
+
+/* COMENTÁRIOS */
+#comments-section{padding:0 16px 14px;}
+#comments-section h4{font-size:11px;color:var(--muted);letter-spacing:.06em;text-transform:uppercase;margin-bottom:10px;}
+.comment{display:flex;gap:9px;margin-bottom:10px;}
+.comment-avatar{width:30px;height:30px;border-radius:50%;background:rgba(232,135,42,.15);display:flex;align-items:center;justify-content:center;font-size:12px;flex-shrink:0;}
+.comment-body{flex:1;min-width:0;}
+.comment-name{font-size:12px;font-weight:600;color:#F4EBD8;margin-bottom:2px;}
+.comment-stars{display:flex;gap:1px;margin-bottom:3px;}
+.comment-text{font-size:11px;color:rgba(244,235,216,.6);line-height:1.5;}
+.comment-date{font-size:10px;color:var(--muted);margin-top:2px;}
+
+/* PRÓXIMOS EVENTOS */
+#next-events-section{padding:0 16px 20px;}
+#next-events-section h4{font-size:11px;color:var(--muted);letter-spacing:.06em;text-transform:uppercase;margin-bottom:10px;}
+.next-ev{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid rgba(232,135,42,.07);cursor:pointer;}
+.next-ev:last-child{border-bottom:none;}
+.next-ev-date{width:36px;text-align:center;flex-shrink:0;}
+.next-ev-day{font-size:16px;font-weight:700;color:#E8872A;line-height:1;}
+.next-ev-mon{font-size:9px;color:var(--muted);text-transform:uppercase;}
+.next-ev-info{flex:1;min-width:0;}
+.next-ev-name{font-size:12px;font-weight:600;color:#F4EBD8;line-height:1.3;}
+.next-ev-meta{font-size:11px;color:var(--muted);margin-top:2px;}
+.next-ev-badge{font-size:10px;padding:2px 7px;border-radius:8px;background:rgba(232,135,42,.12);color:#E8872A;font-weight:600;flex-shrink:0;}
+.ver-mais-btn{width:100%;padding:10px;background:transparent;border:1px solid rgba(232,135,42,.25);border-radius:10px;color:#E8872A;font-size:12px;font-weight:600;cursor:pointer;font-family:'Space Grotesk',sans-serif;margin-top:8px;transition:all .15s;letter-spacing:.04em;}
+.ver-mais-btn:hover{background:rgba(232,135,42,.1);}
+
+/* TOAST */
+#toast{position:fixed;bottom:32px;left:50%;transform:translateX(-50%) translateY(20px);z-index:2000;background:rgba(232,135,42,.95);color:#0D0A07;padding:9px 20px;border-radius:20px;font-size:12px;font-weight:700;opacity:0;pointer-events:none;transition:all .25s;white-space:nowrap;}
 #toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
 
 /* PINS */
 .ots-pin{display:flex;align-items:center;justify-content:center;}
-.ots-pin-head{width:36px;height:36px;border-radius:50% 50% 50% 0;transform:rotate(-45deg);
-  background:#E8872A;border:2px solid rgba(255,255,255,.5);
-  display:flex;align-items:center;justify-content:center;
-  box-shadow:0 0 14px rgba(232,135,42,.5),0 2px 6px rgba(0,0,0,.5);cursor:pointer;transition:box-shadow .15s;}
-.ots-pin-head:hover{box-shadow:0 0 26px rgba(232,135,42,.75),0 2px 8px rgba(0,0,0,.5);}
+.ots-pin-head{width:36px;height:36px;border-radius:50% 50% 50% 0;transform:rotate(-45deg);background:#E8872A;border:2px solid rgba(255,255,255,.5);display:flex;align-items:center;justify-content:center;box-shadow:0 0 14px var(--glow),0 2px 6px rgba(0,0,0,.5);cursor:pointer;transition:box-shadow .15s;}
+.ots-pin-head:hover{box-shadow:0 0 26px rgba(232,135,42,.75);}
 .ots-pin-icon{transform:rotate(45deg);display:flex;align-items:center;justify-content:center;width:20px;height:20px;}
 </style>
 </head>
@@ -138,23 +201,21 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
 <div id="map"></div>
 <div id="overlay"></div>
 <div id="toast"></div>
+<button id="theme-btn" title="Alternar modo dia/noite">🌙</button>
 
 <!-- TOPBAR -->
 <div id="topbar">
   <div class="brand">
     <div class="brand-dot">
-      <svg viewBox="0 0 24 24" width="14" height="14" fill="#0D0A07">
+      <svg viewBox="0 0 24 24" width="13" height="13" fill="#0D0A07">
         <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
       </svg>
     </div>
     <div class="brand-name">onde tem <em>samba</em></div>
   </div>
   <div class="pipe"></div>
-  <!-- Busca + filtros na mesma área -->
   <div class="search-filter-wrap">
-    <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="rgba(244,235,216,.35)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-      <circle cx="11" cy="11" r="7"/><line x1="16.5" y1="16.5" x2="22" y2="22"/>
-    </svg>
+    <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="rgba(244,235,216,.32)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><line x1="16.5" y1="16.5" x2="22" y2="22"/></svg>
     <input id="searchbox" type="text" placeholder="Buscar evento" autocomplete="off"/>
     <div class="filter-divider"></div>
     <div id="filters">
@@ -165,291 +226,342 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
   </div>
 </div>
 
-<!-- FILTROS MOBILE -->
 <div id="filters-mobile">
   <button class="fb on" data-filter="todos">Todos</button>
   <button class="fb"    data-filter="hoje">Hoje</button>
   <button class="fb"    data-filter="fds">Fim de semana</button>
 </div>
 
-<!-- DETAIL BOX -->
+<!-- DETAIL CARD -->
 <div id="detail">
-  <div id="detail-img-wrap">
-    <div id="detail-img-slot"></div>
-    <div id="detail-tags"></div>
-    <button id="detail-close" aria-label="Fechar">
-      <svg viewBox="0 0 24 24" width="12" height="12" stroke="#F4EBD8" stroke-width="2.5" fill="none">
-        <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
-      </svg>
-    </button>
-  </div>
-  <div id="detail-body">
-    <div id="detail-header">
-      <div id="detail-name"></div>
-      <span id="detail-badge"></span>
+  <div id="drag-handle"></div>
+  <div id="detail-scroll">
+
+    <!-- CARROSSEL -->
+    <div id="carousel-wrap">
+      <div id="carousel-imgs"></div>
+      <div id="detail-tags"></div>
+      <button id="detail-close" aria-label="Fechar">
+        <svg viewBox="0 0 24 24" width="12" height="12" stroke="#F4EBD8" stroke-width="2.5" fill="none"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+      <button class="carousel-btn" id="c-prev">‹</button>
+      <button class="carousel-btn" id="c-next">›</button>
+      <div id="carousel-dots"></div>
     </div>
-    <div id="detail-meta"></div>
-    <div id="detail-hr"></div>
-    <button id="detail-share">
-      <svg viewBox="0 0 24 24"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
-      Compartilhar evento
-    </button>
+
+    <!-- LOCAL HEADER -->
+    <div id="local-header">
+      <div id="local-logo-wrap"><div id="local-logo-inner"></div></div>
+      <div id="local-info">
+        <div id="local-name"></div>
+        <div id="local-sub"></div>
+        <div id="local-rating">
+          <div class="stars" id="stars-el"></div>
+          <span id="rating-val"></span>
+          <span id="rating-ct"></span>
+        </div>
+      </div>
+    </div>
+
+    <div class="section-divider"></div>
+
+    <!-- EVENTO INFO -->
+    <div id="ev-header">
+      <div id="ev-nome"></div>
+      <div id="ev-badge"></div>
+    </div>
+    <div id="ev-meta"></div>
+
+    <!-- ACTIONS -->
+    <div id="action-row">
+      <button class="action-btn" id="btn-copy">
+        <svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+        Copiar endereço
+      </button>
+      <button class="action-btn" id="btn-share">
+        <svg viewBox="0 0 24 24"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+        Compartilhar
+      </button>
+      <button class="action-btn" id="btn-maps">
+        <svg viewBox="0 0 24 24"><polygon points="3 11 22 2 13 21 11 13 3 11"/></svg>
+        Abrir no Maps
+      </button>
+    </div>
+
+    <!-- MINI MAP -->
+    <div id="mini-map-section">
+      <h4>Localização</h4>
+      <div id="mini-map"></div>
+      <div id="address-row">
+        <div id="address-text"></div>
+      </div>
+    </div>
+
+    <div class="section-divider"></div>
+
+    <!-- PRÓXIMOS EVENTOS DO LOCAL -->
+    <div id="next-events-section">
+      <h4>Próximos eventos neste local</h4>
+      <div id="next-ev-list"></div>
+      <button class="ver-mais-btn" id="ver-mais-btn">Ver todos os eventos →</button>
+    </div>
+
+    <div class="section-divider"></div>
+
+    <!-- COMENTÁRIOS -->
+    <div id="comments-section">
+      <h4>Avaliações</h4>
+      <div id="comments-list"></div>
+    </div>
+
   </div>
 </div>
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script src="env.js" onerror="console.warn('env.js ausente')"></script>
 <script>
-// ============================================================
-// CONFIGURAÇÃO — edite apenas este bloco para conectar ao banco
-// ============================================================
-const SUPABASE_URL     = 'https://cwdjdvsdswpisqidcayn.supabase.co';
-const SUPABASE_ANON    = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN3ZGpkdnNkc3dwaXNxaWRjYXluIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODEzMDI0ODEsImV4cCI6MjA5Njg3ODQ4MX0.yl_yleFrsNgQhOrN15op8EfK4LtfQ3UNHNH1-uh5svU';
-const MAP_CENTER       = [-23.2165, -47.5238];
-const MAP_ZOOM         = 14;
-// ============================================================
+const CFG=window.OTS_ENV||{};
+const SB_URL=CFG.SUPABASE_URL||'https://SEU_PROJECT_ID.supabase.co';
+const SB_KEY=CFG.SUPABASE_KEY||'SUA_ANON_KEY_AQUI';
 
-// Porto Feliz — bounds que restringem o mapa à cidade
-const PORTO_FELIZ_CENTER = [-23.2165, -47.5238];
-const PORTO_FELIZ_BOUNDS = L.latLngBounds(
-  [-23.265, -47.570],  // SW
-  [-23.170, -47.480]   // NE
-);
+// ── MODO DIA/NOITE ──
+const TILE_NIGHT='https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
+const TILE_DAY  ='https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
+let isDayMode = new Date().getHours() >= 6 && new Date().getHours() < 18;
 
-// ── Imagens geradas por tema (samba/pagode) ──
-// Pool de imagens Unsplash com tema musical/samba — usadas quando evento não tem foto
-const SAMBA_IMGS = [
-  "https://images.unsplash.com/photo-1533174072545-7a4b6ad7a6c3?w=620&q=80",
-  "https://images.unsplash.com/photo-1501386761578-eaa54b492c24?w=620&q=80",
-  "https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?w=620&q=80",
-  "https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=620&q=80",
-  "https://images.unsplash.com/photo-1571266028243-e4733b0f0bb0?w=620&q=80",
-  "https://images.unsplash.com/photo-1470229722913-7c0e2dbbafd3?w=620&q=80",
-  "https://images.unsplash.com/photo-1429962714451-bb934ecdc4ec?w=620&q=80",
-  "https://images.unsplash.com/photo-1524368535928-5b5e00ddc76b?w=620&q=80",
+function applyTheme(day){
+  isDayMode=day;
+  const mapEl=document.getElementById('map');
+  mapEl.classList.toggle('day-mode',day);
+  document.getElementById('theme-btn').textContent=day?'🌙':'☀️';
+  localStorage.setItem('ots-theme',day?'day':'night');
+}
+
+// Auto tema baseado no horário
+const savedTheme=localStorage.getItem('ots-theme');
+if(savedTheme) isDayMode=savedTheme==='day';
+
+document.getElementById('theme-btn').addEventListener('click',()=>applyTheme(!isDayMode));
+// Muda automaticamente a cada hora
+setInterval(()=>{
+  if(!localStorage.getItem('ots-theme')){
+    const h=new Date().getHours();
+    applyTheme(h>=6&&h<18);
+  }
+},60*60*1000);
+
+// ── DADOS ──
+const today=new Date();
+const add=n=>{const d=new Date(today);d.setDate(d.getDate()+n);return d.toISOString().split('T')[0];};
+const SAMBA_IMGS=["https://images.unsplash.com/photo-1533174072545-7a4b6ad7a6c3?w=640&q=80","https://images.unsplash.com/photo-1501386761578-eaa54b492c24?w=640&q=80","https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?w=640&q=80","https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=640&q=80","https://images.unsplash.com/photo-1470229722913-7c0e2dbbafd3?w=640&q=80","https://images.unsplash.com/photo-1429962714451-bb934ecdc4ec?w=640&q=80"];
+const getAutoImg=id=>SAMBA_IMGS[Math.abs(id)%SAMBA_IMGS.length];
+
+const SEED=[
+  {id:1,nome:"Pagode no Coreto",local:"Praça Coronel Almeida",bairro:"Centro",lat:-23.2155,lng:-47.5270,data:add(0),hora:"19h",recorrencia:"Toda sexta",tipo_ingresso:"gratuito",preco:null,estilos:["pagode"],foto_url:null,logo_url:null,rating:4.7,rating_count:38,fotos:[null,null]},
+  {id:2,nome:"Roda de samba do Léo",local:"Bar do Léo",bairro:"Centro",lat:-23.2142,lng:-47.5258,data:add(1),hora:"21h",recorrencia:"Todo sábado",tipo_ingresso:"pago",preco:15,estilos:["raiz","pagode"],foto_url:"https://images.unsplash.com/photo-1501386761578-eaa54b492c24?w=640&q=80",logo_url:null,rating:4.5,rating_count:22,fotos:["https://images.unsplash.com/photo-1501386761578-eaa54b492c24?w=640&q=80",null]},
+  {id:3,nome:"Samba às margens do Tietê",local:"Orla do Rio Tietê",bairro:"Beira Rio",lat:-23.2098,lng:-47.5312,data:add(2),hora:"17h",recorrencia:"Todo domingo",tipo_ingresso:"gratuito",preco:null,estilos:["raiz"],foto_url:null,logo_url:null,rating:4.9,rating_count:64,fotos:[null,null]},
+  {id:4,nome:"Partido alto na Vila",local:"Associação Recreativa",bairro:"Vila Maria",lat:-23.2178,lng:-47.5220,data:add(3),hora:"20h",recorrencia:"Quinzenal",tipo_ingresso:"pago",preco:10,estilos:["partido alto"],foto_url:null,logo_url:null,rating:4.2,rating_count:14,fotos:[null]},
+  {id:5,nome:"Pagode Monções",local:"Espaço das Monções",bairro:"Jd. Monções",lat:-23.2205,lng:-47.5185,data:add(5),hora:"20h30",recorrencia:"Semanal",tipo_ingresso:"pago",preco:20,estilos:["pagode"],foto_url:null,logo_url:null,rating:4.3,rating_count:18,fotos:[null]},
+  {id:6,nome:"Noite do cavaquinho",local:"Boteco do Tião",bairro:"Jd. Martelli",lat:-23.2130,lng:-47.5295,data:add(0),hora:"20h",recorrencia:"Toda quinta",tipo_ingresso:"gratuito",preco:null,estilos:["raiz"],foto_url:null,logo_url:null,rating:4.6,rating_count:29,fotos:[null]},
+  {id:7,nome:"Samba de raiz no Bambuzal",local:"Chácara Bambuzal",bairro:"Bambu",lat:-23.2240,lng:-47.5148,data:add(1),hora:"18h",recorrencia:"Único",tipo_ingresso:"pago",preco:25,estilos:["raiz"],foto_url:"https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?w=640&q=80",logo_url:null,rating:4.8,rating_count:11,fotos:["https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?w=640&q=80",null]},
 ];
 
-// Seleciona imagem baseada no id do evento (determinística — mesmo evento = mesma imagem)
-function getAutoImg(evId) {
-  return SAMBA_IMGS[evId % SAMBA_IMGS.length];
-}
-
-// ── Dados locais ──
-const today = new Date();
-const add = n => { const d=new Date(today); d.setDate(d.getDate()+n); return d.toISOString().split('T')[0]; };
-
-const SEED = [
-  {id:1,nome:"Pagode no Coreto",local:"Praça Coronel Almeida",bairro:"Centro",
-   lat:-23.2155,lng:-47.5270,data:add(0),hora:"19h",recorrencia:"Toda sexta",
-   tipo_ingresso:"gratuito",preco:null,estilos:["pagode"],foto_url:null},
-  {id:2,nome:"Roda de samba do Léo",local:"Bar do Léo",bairro:"Centro",
-   lat:-23.2142,lng:-47.5258,data:add(1),hora:"21h",recorrencia:"Todo sábado",
-   tipo_ingresso:"pago",preco:15,estilos:["raiz","pagode"],
-   foto_url:"https://images.unsplash.com/photo-1501386761578-eaa54b492c24?w=620&q=80"},
-  {id:3,nome:"Samba às margens do Tietê",local:"Orla do Rio Tietê",bairro:"Beira Rio",
-   lat:-23.2098,lng:-47.5312,data:add(2),hora:"17h",recorrencia:"Todo domingo",
-   tipo_ingresso:"gratuito",preco:null,estilos:["raiz"],foto_url:null},
-  {id:4,nome:"Partido alto na Vila",local:"Associação Recreativa",bairro:"Vila Maria",
-   lat:-23.2178,lng:-47.5220,data:add(3),hora:"20h",recorrencia:"Quinzenal",
-   tipo_ingresso:"pago",preco:10,estilos:["partido alto"],foto_url:null},
-  {id:5,nome:"Pagode Monções",local:"Espaço das Monções",bairro:"Jd. Monções",
-   lat:-23.2205,lng:-47.5185,data:add(5),hora:"20h30",recorrencia:"Semanal",
-   tipo_ingresso:"pago",preco:20,estilos:["pagode"],foto_url:null},
-  {id:6,nome:"Noite do cavaquinho",local:"Boteco do Tião",bairro:"Jd. Martelli",
-   lat:-23.2130,lng:-47.5295,data:add(0),hora:"20h",recorrencia:"Toda quinta",
-   tipo_ingresso:"gratuito",preco:null,estilos:["raiz"],foto_url:null},
-  {id:7,nome:"Samba de raiz no Bambuzal",local:"Chácara Bambuzal",bairro:"Bambu",
-   lat:-23.2240,lng:-47.5148,data:add(1),hora:"18h",recorrencia:"Único",
-   tipo_ingresso:"pago",preco:25,estilos:["raiz"],
-   foto_url:"https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?w=620&q=80"},
+const MOCK_COMMENTS=[
+  {avatar:"🎵",name:"Carla M.",stars:5,text:"Melhor pagode da cidade! Ambiente acolhedor e música ao vivo boa demais.",date:"há 2 dias"},
+  {avatar:"🥁",name:"João P.",stars:4,text:"Muito bom, samba de raiz de verdade. O único ponto é que fica cheio rápido.",date:"há 5 dias"},
+  {avatar:"🎸",name:"Marina S.",stars:5,text:"Fui com a família e adoramos. Recomendo muito!",date:"há 1 semana"},
 ];
 
-// ── Helpers ──
-function dayType(ds){
-  const d=new Date(ds+'T12:00:00'),diff=Math.round((d-today)/86400000),dow=d.getDay();
-  if(diff===0)return'hoje'; if(dow===0||dow===6)return'fds'; return'sem';
-}
-function dayLabel(ds){
-  if(dayType(ds)==='hoje')return'HOJE';
-  const d=new Date(ds+'T12:00:00');
-  return d.toLocaleDateString('pt-BR',{weekday:'short',day:'numeric',month:'short'}).toUpperCase();
-}
-function fmtIngresso(ev){
-  if(ev.tipo_ingresso==='gratuito')return'Gratuito';
-  if(ev.tipo_ingresso==='chapeu')return'Chapéu';
-  return ev.preco?`R$ ${Number(ev.preco).toFixed(0)}`:'A confirmar';
-}
+function dayType(ds){const d=new Date(ds+'T12:00:00'),diff=Math.round((d-today)/86400000),dow=d.getDay();if(diff===0)return'hoje';if(dow===0||dow===6)return'fds';return'sem';}
+function dayLabel(ds){if(dayType(ds)==='hoje')return'HOJE';const d=new Date(ds+'T12:00:00');return d.toLocaleDateString('pt-BR',{weekday:'short',day:'numeric',month:'short'}).toUpperCase();}
+function fmtIng(ev){if(ev.tipo_ingresso==='gratuito')return'Gratuito';if(ev.tipo_ingresso==='chapeu')return'Chapéu';return ev.preco?`R$ ${Number(ev.preco).toFixed(0)}`:'A confirmar';}
 
-// Resolve imagem: usa foto_url do evento ou gera automaticamente
-function resolveImg(ev){
-  return ev.foto_url && ev.foto_url.trim() !== '' ? ev.foto_url : getAutoImg(ev.id);
-}
+// Stars
+function starsHTML(r){let s='';for(let i=1;i<=5;i++)s+=`<span class="star${i>Math.round(r)?' empty':''}">★</span>`;return s;}
 
-// ── Pandeiro SVG ──
-const PANDEIRO=`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18" height="18" fill="none">
-  <circle cx="12" cy="12" r="10" stroke="#0D0A07" stroke-width="2.5"/>
-  <circle cx="12" cy="12" r="6" stroke="#0D0A07" stroke-width="1.5" stroke-dasharray="2 2"/>
-  <rect x="1" y="10.5" width="2.5" height="3.5" rx=".7" fill="#0D0A07" transform="rotate(-40 12 12) translate(-11 0)"/>
-  <rect x="1" y="10.5" width="2.5" height="3.5" rx=".7" fill="#0D0A07" transform="rotate(80 12 12) translate(-11 0)"/>
-  <rect x="1" y="10.5" width="2.5" height="3.5" rx=".7" fill="#0D0A07" transform="rotate(200 12 12) translate(-11 0)"/>
-  <circle cx="12" cy="12" r="2" fill="#0D0A07"/>
-</svg>`;
+// ── PANDEIRO ──
+const PANDEIRO=`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18" height="18" fill="none"><circle cx="12" cy="12" r="10" stroke="#0D0A07" stroke-width="2.5"/><circle cx="12" cy="12" r="6" stroke="#0D0A07" stroke-width="1.5" stroke-dasharray="2 2"/><rect x="1" y="10.5" width="2.5" height="3.5" rx=".7" fill="#0D0A07" transform="rotate(-40 12 12) translate(-11 0)"/><rect x="1" y="10.5" width="2.5" height="3.5" rx=".7" fill="#0D0A07" transform="rotate(80 12 12) translate(-11 0)"/><rect x="1" y="10.5" width="2.5" height="3.5" rx=".7" fill="#0D0A07" transform="rotate(200 12 12) translate(-11 0)"/><circle cx="12" cy="12" r="2" fill="#0D0A07"/></svg>`;
+function makeIcon(f){const html=`<div class="ots-pin" style="opacity:${f?.13:1}"><div class="ots-pin-head"><span class="ots-pin-icon">${PANDEIRO}</span></div></div>`;return L.divIcon({html,className:'',iconSize:[36,42],iconAnchor:[18,40],popupAnchor:[0,-42]});}
 
-function makeIcon(faded){
-  const html=`<div class="ots-pin" style="opacity:${faded?0.13:1}">
-    <div class="ots-pin-head"><span class="ots-pin-icon">${PANDEIRO}</span></div>
-  </div>`;
-  return L.divIcon({html,className:'',iconSize:[36,42],iconAnchor:[18,40],popupAnchor:[0,-42]});
-}
+function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2500);}
 
-// ── Toast ──
-function showToast(msg){
-  const t=document.getElementById('toast');
-  t.textContent=msg; t.classList.add('show');
-  setTimeout(()=>t.classList.remove('show'),2800);
-}
+// ── ESTADO ──
+let map,layer,miniMap,miniMapMarker;
+let allEvents=[],curFilter='todos',curSearch='',curEvent=null;
+let carouselIdx=0,carouselImgs=[];
+const PORTO_FELIZ_BOUNDS=L.latLngBounds([-23.265,-47.570],[-23.170,-47.480]);
 
-// ── Estado ──
-let map, layer, allEvents=[], curFilter='todos', curSearch='', curEvent=null;
-
-// ── Mapa — restrito a Porto Feliz ──
+// ── MAPA ──
 function initMap(){
-  map=L.map('map',{
-    center:PORTO_FELIZ_CENTER,
-    zoom:14,
-    zoomControl:false,
-    minZoom:12,
-    maxZoom:18,
-    maxBounds:PORTO_FELIZ_BOUNDS,
-    maxBoundsViscosity:1.0,
-  });
-  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{
-    maxZoom:18,attribution:'© <a href="https://openstreetmap.org">OpenStreetMap</a>',crossOrigin:true
-  }).addTo(map);
+  map=L.map('map',{center:[-23.2165,-47.5238],zoom:14,zoomControl:false,minZoom:12,maxZoom:18,maxBounds:PORTO_FELIZ_BOUNDS,maxBoundsViscosity:.95});
+  L.tileLayer(TILE_NIGHT,{maxZoom:18,attribution:'© OpenStreetMap',crossOrigin:true}).addTo(map);
   L.control.zoom({position:'bottomright'}).addTo(map);
   layer=L.layerGroup().addTo(map);
+  applyTheme(isDayMode);
 }
 
-// ── Filtra ──
-function filtered(){
-  return allEvents.filter(ev=>{
-    const t=dayType(ev.data);
-    if(curFilter==='hoje'&&t!=='hoje')return false;
-    if(curFilter==='fds'&&t!=='fds')return false;
-    if(curSearch){
-      const q=curSearch.toLowerCase();
-      if(![ev.nome,ev.bairro,ev.local].join(' ').toLowerCase().includes(q))return false;
-    }
-    return true;
-  });
+// ── PINS ──
+function filtered(){return allEvents.filter(ev=>{const t=dayType(ev.data);if(curFilter==='hoje'&&t!=='hoje')return false;if(curFilter==='fds'&&t!=='fds')return false;if(curSearch){const q=curSearch.toLowerCase();if(![ev.nome,ev.bairro,ev.local].join(' ').toLowerCase().includes(q))return false;}return true;});}
+function renderPins(){const vis=filtered(),ids=new Set(vis.map(e=>e.id));layer.clearLayers();allEvents.forEach(ev=>{const m=L.marker([ev.lat,ev.lng],{icon:makeIcon(!ids.has(ev.id)),zIndexOffset:ids.has(ev.id)?100:0});if(ids.has(ev.id))m.on('click',()=>{map.panTo([ev.lat,ev.lng],{animate:true,duration:.4});openDetail(ev);});m.addTo(layer);});}
+
+// ── CARROSSEL ──
+function buildCarousel(ev){
+  carouselImgs=[];
+  const fotos=ev.fotos||[];
+  fotos.forEach((f,i)=>carouselImgs.push(f||getAutoImg(ev.id+i)));
+  if(carouselImgs.length===0)carouselImgs.push(getAutoImg(ev.id));
+  carouselIdx=0;
+  const wrap=document.getElementById('carousel-imgs');
+  wrap.innerHTML=carouselImgs.map((src,i)=>`<img class="carousel-img${i===0?' active':''}" src="${src}" alt="" onerror="this.src='${getAutoImg(ev.id)}'"/>`).join('');
+  const dots=document.getElementById('carousel-dots');
+  dots.innerHTML=carouselImgs.length>1?carouselImgs.map((_,i)=>`<div class="cdot${i===0?' on':''}" onclick="goCarousel(${i})"></div>`).join(''):'';
+  document.getElementById('c-prev').style.display=carouselImgs.length>1?'flex':'none';
+  document.getElementById('c-next').style.display=carouselImgs.length>1?'flex':'none';
+}
+function goCarousel(idx){
+  const imgs=document.querySelectorAll('.carousel-img');
+  const dots=document.querySelectorAll('.cdot');
+  imgs[carouselIdx]?.classList.remove('active');
+  dots[carouselIdx]?.classList.remove('on');
+  carouselIdx=((idx%carouselImgs.length)+carouselImgs.length)%carouselImgs.length;
+  imgs[carouselIdx]?.classList.add('active');
+  dots[carouselIdx]?.classList.add('on');
+}
+document.getElementById('c-prev').addEventListener('click',()=>goCarousel(carouselIdx-1));
+document.getElementById('c-next').addEventListener('click',()=>goCarousel(carouselIdx+1));
+
+// ── MINI MAP ──
+function buildMiniMap(ev){
+  if(miniMap){miniMap.remove();miniMap=null;}
+  setTimeout(()=>{
+    miniMap=L.map('mini-map',{center:[ev.lat,ev.lng],zoom:15,zoomControl:false,dragging:false,scrollWheelZoom:false,doubleClickZoom:false,touchZoom:false});
+    L.tileLayer(TILE_NIGHT,{maxZoom:18,attribution:'',crossOrigin:true}).addTo(miniMap);
+    if(isDayMode) miniMap.getContainer().classList.add('day-mode');
+    miniMapMarker=L.marker([ev.lat,ev.lng],{icon:makeIcon(false)}).addTo(miniMap);
+    miniMap.invalidateSize();
+  },100);
 }
 
-// ── Pins ──
-function renderPins(){
-  const vis=filtered(),ids=new Set(vis.map(e=>e.id));
-  layer.clearLayers();
-  allEvents.forEach(ev=>{
-    const m=L.marker([ev.lat,ev.lng],{icon:makeIcon(!ids.has(ev.id)),zIndexOffset:ids.has(ev.id)?100:0});
-    if(ids.has(ev.id)) m.on('click',()=>{
-      map.panTo([ev.lat,ev.lng],{animate:true,duration:.4});
-      openDetail(ev);
-    });
-    m.addTo(layer);
-  });
+// ── PRÓXIMOS EVENTOS DO LOCAL ──
+function buildNextEvents(ev){
+  const others=allEvents.filter(e=>e.local===ev.local&&e.id!==ev.id).slice(0,3);
+  const list=document.getElementById('next-ev-list');
+  if(!others.length){list.innerHTML='<p style="font-size:12px;color:var(--muted);">Nenhum outro evento agendado para este local.</p>';document.getElementById('ver-mais-btn').style.display='none';return;}
+  document.getElementById('ver-mais-btn').style.display='block';
+  list.innerHTML=others.map(e=>{
+    const d=new Date(e.data+'T12:00:00');
+    return`<div class="next-ev" onclick="openDetail(allEvents.find(x=>x.id===${e.id}))">
+      <div class="next-ev-date"><div class="next-ev-day">${d.getDate()}</div><div class="next-ev-mon">${d.toLocaleDateString('pt-BR',{month:'short'})}</div></div>
+      <div class="next-ev-info"><div class="next-ev-name">${e.nome}</div><div class="next-ev-meta">${e.hora} · ${fmtIng(e)}</div></div>
+      <span class="next-ev-badge">${dayLabel(e.data)}</span>
+    </div>`;
+  }).join('');
 }
 
-// ── Detail ──
+// ── COMENTÁRIOS ──
+function buildComments(ev){
+  const rating=ev.rating||4.5;
+  const ct=ev.rating_count||0;
+  document.getElementById('stars-el').innerHTML=starsHTML(rating);
+  document.getElementById('rating-val').textContent=rating.toFixed(1);
+  document.getElementById('rating-ct').textContent=`(${ct} avaliações)`;
+  document.getElementById('comments-list').innerHTML=MOCK_COMMENTS.map(c=>`
+    <div class="comment">
+      <div class="comment-avatar">${c.avatar}</div>
+      <div class="comment-body">
+        <div class="comment-name">${c.name}</div>
+        <div class="comment-stars">${starsHTML(c.stars)}</div>
+        <div class="comment-text">${c.text}</div>
+        <div class="comment-date">${c.date}</div>
+      </div>
+    </div>`).join('');
+}
+
+// ── OPEN DETAIL ──
 function openDetail(ev){
+  if(!ev)return;
   curEvent=ev;
-  const imgUrl=resolveImg(ev);
-
-  document.getElementById('detail-img-slot').innerHTML=
-    `<img id="detail-img" src="${imgUrl}" alt="${ev.nome}"
-       onerror="this.src='https://images.unsplash.com/photo-1524368535928-5b5e00ddc76b?w=620&q=80'"/>`;
-
-  document.getElementById('detail-tags').innerHTML=
-    (ev.estilos||[]).map(s=>`<span class="dtag">${s}</span>`).join('');
-
-  document.getElementById('detail-name').textContent=ev.nome;
-  document.getElementById('detail-badge').textContent=dayLabel(ev.data);
-
-  document.getElementById('detail-meta').innerHTML=`
-    <div class="dm"><svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg><span>${ev.local}</span></div>
-    <div class="dm"><svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg><span>${ev.bairro}</span></div>
+  // Carrossel
+  buildCarousel(ev);
+  // Tags
+  document.getElementById('detail-tags').innerHTML=(ev.estilos||[]).map(s=>`<span class="dtag">${s}</span>`).join('');
+  // Local header
+  const logoInner=document.getElementById('local-logo-inner');
+  if(ev.logo_url){logoInner.innerHTML=`<img id="local-logo" src="${ev.logo_url}" alt=""/>`;}
+  else{logoInner.innerHTML=`<div id="local-logo-placeholder">🥁</div>`;}
+  document.getElementById('local-name').textContent=ev.local;
+  document.getElementById('local-sub').textContent=ev.bairro+' · Porto Feliz, SP';
+  buildComments(ev);
+  // Evento
+  document.getElementById('ev-nome').textContent=ev.nome;
+  document.getElementById('ev-badge').textContent=dayLabel(ev.data);
+  // Meta
+  document.getElementById('ev-meta').innerHTML=`
+    <div class="dm"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="3" y1="10" x2="21" y2="10"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/></svg><span>${dayLabel(ev.data)}</span></div>
     <div class="dm"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg><span>${ev.hora} · ${ev.recorrencia}</span></div>
-    <div class="dm"><svg viewBox="0 0 24 24"><path d="M2 9a3 3 0 010 6v2a2 2 0 002 2h16a2 2 0 002-2v-2a3 3 0 010-6V7a2 2 0 00-2-2H4a2 2 0 00-2 2v2z"/></svg><span>${fmtIngresso(ev)}</span></div>`;
-
+    <div class="dm"><svg viewBox="0 0 24 24"><path d="M2 9a3 3 0 010 6v2a2 2 0 002 2h16a2 2 0 002-2v-2a3 3 0 010-6V7a2 2 0 00-2-2H4a2 2 0 00-2 2v2z"/></svg><span>${fmtIng(ev)}</span></div>
+    <div class="dm"><svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg><span>${ev.bairro}</span></div>`;
+  // Endereço
+  const addr=`${ev.local}, ${ev.bairro}, Porto Feliz – SP`;
+  document.getElementById('address-text').textContent=addr;
+  // Mini mapa
+  buildMiniMap(ev);
+  // Próximos eventos
+  buildNextEvents(ev);
+  // Ações
+  document.getElementById('btn-copy').onclick=()=>{navigator.clipboard?.writeText(addr).then(()=>showToast('📋 Endereço copiado!'));};
+  document.getElementById('btn-share').onclick=()=>{
+    const text=`🥁 ${ev.nome}\n📍 ${addr}\n🕐 ${ev.hora} · ${ev.recorrencia}\n🎟 ${fmtIng(ev)}`;
+    if(navigator.share)navigator.share({title:ev.nome,text,url:window.location.href}).catch(()=>{});
+    else navigator.clipboard?.writeText(text+'\n'+window.location.href).then(()=>showToast('📋 Link copiado!'));
+  };
+  document.getElementById('btn-maps').onclick=()=>{window.open(`https://maps.google.com/?q=${ev.lat},${ev.lng}`,'_blank');};
+  document.getElementById('ver-mais-btn').onclick=()=>showToast('Em breve: agenda completa do local!');
+  // Abre
   document.getElementById('detail').classList.add('open');
   document.getElementById('overlay').classList.add('on');
+  document.getElementById('detail-scroll').scrollTop=0;
 }
 
 function closeDetail(){
   document.getElementById('detail').classList.remove('open');
   document.getElementById('overlay').classList.remove('on');
+  if(miniMap){miniMap.remove();miniMap=null;}
   curEvent=null;
 }
 
-// ── Compartilhar ──
-function shareEvent(){
-  if(!curEvent) return;
-  const text=`🥁 ${curEvent.nome}\n📍 ${curEvent.local} — ${curEvent.bairro}\n🕐 ${curEvent.hora} · ${curEvent.recorrencia}\n🎟 ${fmtIngresso(curEvent)}\n\nEncontrado no Onde Tem Samba`;
-  const url=window.location.href;
-  if(navigator.share){
-    navigator.share({title:curEvent.nome,text,url}).catch(()=>{});
-  } else if(navigator.clipboard){
-    navigator.clipboard.writeText(`${text}\n${url}`)
-      .then(()=>showToast('📋 Link copiado!'))
-      .catch(()=>showToast('❌ Não foi possível copiar'));
-  } else {
-    showToast('📋 Compartilhe: '+url);
-  }
-}
+// ── SWIPE para fechar ──
+let tsY=0;
+document.getElementById('detail').addEventListener('touchstart',e=>{tsY=e.touches[0].clientY;},{passive:true});
+document.getElementById('detail').addEventListener('touchend',e=>{
+  if(e.changedTouches[0].clientY-tsY>80&&document.getElementById('detail-scroll').scrollTop===0)closeDetail();
+},{passive:true});
 
-// ── Sync filtros ──
-function syncFilters(f){
-  document.querySelectorAll('.fb').forEach(b=>b.classList.toggle('on',b.dataset.filter===f));
-}
+// ── EVENTOS ──
+document.getElementById('overlay').addEventListener('click',closeDetail);
+document.getElementById('detail-close').addEventListener('click',closeDetail);
+document.getElementById('searchbox').addEventListener('input',e=>{curSearch=e.target.value.trim();renderPins();});
+document.querySelectorAll('.fb').forEach(btn=>btn.addEventListener('click',()=>{curFilter=btn.dataset.filter;document.querySelectorAll('.fb').forEach(b=>b.classList.toggle('on',b.dataset.filter===curFilter));closeDetail();renderPins();}));
 
-// ── Carrega eventos ──
+// ── LOAD ──
 async function loadEvents(){
-  const configured=SUPABASE_URL!=='https://SEU_PROJECT_ID.supabase.co'&&SUPABASE_ANON!=='SUA_ANON_KEY_AQUI';
-  if(configured){
+  const ok=SB_URL!=='https://SEU_PROJECT_ID.supabase.co'&&SB_KEY!=='SUA_ANON_KEY_AQUI';
+  if(ok){
     try{
-      const client=window.supabase.createClient(SUPABASE_URL,SUPABASE_ANON);
-      const todayStr=new Date().toISOString().split('T')[0];
-      const {data,error}=await client.from('v_eventos_mapa').select('*').gte('data_inicio',todayStr).order('data_inicio');
-      if(error) throw error;
-      allEvents=(data||[]).map(e=>({
-        id:e.id,nome:e.nome,local:e.organizador_nome,bairro:e.cidade||'',
-        lat:e.lat,lng:e.lng,data:e.data_inicio,
-        hora:(e.hora_inicio||'').slice(0,5).replace(':','h'),
-        recorrencia:e.recorrencia||'',tipo_ingresso:e.tipo_ingresso,
-        preco:e.preco,estilos:e.estilos||[],foto_url:e.foto_url||null,
-      }));
-    }catch(err){
-      console.warn('[OTS] usando dados locais:',err.message);
-      allEvents=SEED;
-    }
-  } else {
-    allEvents=SEED;
-  }
+      const client=window.supabase.createClient(SB_URL,SB_KEY);
+      const{data,error}=await client.from('v_eventos_mapa').select('*').gte('data_inicio',new Date().toISOString().split('T')[0]).order('data_inicio');
+      if(error)throw error;
+      allEvents=(data||[]).map(e=>({id:e.id,nome:e.nome,local:e.organizador_nome,bairro:e.cidade||'',lat:e.lat,lng:e.lng,data:e.data_inicio,hora:(e.hora_inicio||'').slice(0,5).replace(':','h'),recorrencia:e.recorrencia||'',tipo_ingresso:e.tipo_ingresso,preco:e.preco,estilos:e.estilos||[],foto_url:e.foto_url||null,logo_url:null,rating:4.5,rating_count:0,fotos:[e.foto_url||null]}));
+    }catch(err){console.warn('[OTS] seed:',err.message);allEvents=SEED;}
+  }else{allEvents=SEED;}
   renderPins();
 }
 
-// ── Init ──
-document.addEventListener('DOMContentLoaded',()=>{
-  initMap();
-  document.getElementById('overlay').addEventListener('click',closeDetail);
-  document.getElementById('detail-close').addEventListener('click',closeDetail);
-  document.getElementById('detail-share').addEventListener('click',shareEvent);
-  document.getElementById('searchbox').addEventListener('input',e=>{
-    curSearch=e.target.value.trim(); renderPins();
-  });
-  document.querySelectorAll('.fb').forEach(btn=>btn.addEventListener('click',()=>{
-    curFilter=btn.dataset.filter; syncFilters(curFilter); closeDetail(); renderPins();
-  }));
-  loadEvents();
-});
+document.addEventListener('DOMContentLoaded',()=>{initMap();applyTheme(isDayMode);loadEvents();});
+// expõe para next-events inline onclick
+window.allEvents=allEvents;
+window.openDetail=openDetail;
 </script>
 </body>
 </html>
