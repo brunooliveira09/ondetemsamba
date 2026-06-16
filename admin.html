@@ -324,13 +324,17 @@ nav{flex:1;padding:4px 0;}
   </div>
 </div>
 
+
+
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <script>
-const CFG=window.OTS_ENV||{};
-const SB_URL=CFG.SUPABASE_URL||'https://cwdjdvsdswpisqidcayn.supabase.co';
-const SB_KEY=CFG.SUPABASE_SERVICE_KEY||CFG.SUPABASE_KEY||'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN3ZGpkdnNkc3dwaXNxaWRjYXluIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODEzMDI0ODEsImV4cCI6MjA5Njg3ODQ4MX0.yl_yleFrsNgQhOrN15op8EfK4LtfQ3UNHNH1-uh5svU';
-
-
+// ═══════════════════════════════════════════════
+// CREDENCIAIS — edite aqui ou no GitHub
+// Supabase → Settings → API
+// ═══════════════════════════════════════════════
+const SB_URL = 'https://cwdjdvsdswpisqidcayn.supabase.co/rest/v1/';  // ← Project URL
+const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN3ZGpkdnNkc3dwaXNxaWRjYXluIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc4MTMwMjQ4MSwiZXhwIjoyMDk2ODc4NDgxfQ._pEN6MxbuFGW7K_O52eWOrf4qMBnm1MUGViWDQPpYg0';            // ← service_role secret
+// ═══════════════════════════════════════════════
 let sbClient=null;
 function getSB(){if(!sbClient&&SB_URL!=='https://SEU_PROJECT_ID.supabase.co')sbClient=window.supabase?.createClient(SB_URL,SB_KEY);return sbClient;}
 
