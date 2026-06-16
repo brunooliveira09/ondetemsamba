@@ -272,7 +272,19 @@ nav{flex:1;padding:4px 0;}
 
   <!-- MAIN -->
   <div id="main">
-    <div id="mhd"><h1 id="ptitle">Dashboard</h1><div id="mact"></div></div>
+    <div id="mhd">
+      <h1 id="ptitle">Dashboard</h1>
+      <div id="mact">
+        <button id="btn-novo-ev"  class="hbtn" style="display:none;">
+          <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" fill="none" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          <span>Novo evento</span>
+        </button>
+        <button id="btn-novo-org" class="hbtn" style="display:none;">
+          <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" fill="none" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          <span>Novo organizador</span>
+        </button>
+      </div>
+    </div>
     <div id="mc">
 
       <!-- DASHBOARD -->
@@ -390,6 +402,13 @@ async function doLogout(){
   toggleDrawer(false);
 }
 
+// ── Maps para lookup por ID (evita JSON inline em onclick) ──
+const EVTS_MAP = {};
+const ORGS_MAP = {};
+
+function eEvById(id)  { const e = EVTS_MAP[id]; if(e) eEv(e);   else console.warn('Evento não encontrado:', id); }
+function eOrgById(id) { const o = ORGS_MAP[id]; if(o) eOrg(o);  else console.warn('Org não encontrada:', id); }
+
 // ── LOAD ──
 async function loadAll(){
   const sb=getSB();
@@ -447,30 +466,33 @@ function renderDash(dash,v7){
 
 // ── EV TABLE ──
 function renderEvTable(list){
+  // Guarda referência por ID para evitar JSON inline no onclick
+  list.forEach(e => { EVTS_MAP[e.id] = e; });
   // desktop
   document.getElementById('ev-desk').innerHTML=list.map(e=>`
     <tr><td>${e.nome}</td><td>${e.org_nome||'—'}</td><td>${fmt(e.data_inicio)}</td><td>${fmtIng(e.tipo_ingresso,e.preco)}</td><td>${stB(e.status)}</td>
-    <td><div class="acts"><button class="ab" onclick='eEv(${JSON.stringify(e)})'>Editar</button><button class="ab ab-del" onclick="cDel('ev','${e.id}','${e.nome.replace(/'/g,"\\'")}')">Excluir</button></div></td></tr>`).join('')||'<tr><td colspan="6" style="text-align:center;padding:20px;color:var(--muted);">Nenhum evento</td></tr>';
+    <td><div class="acts"><button class="ab" data-id="${e.id}" data-type="ev" onclick="eEvById(this.dataset.id)">Editar</button><button class="ab ab-del" data-id="${e.id}" data-nome="${(e.nome||'').replace(/"/g,'&quot;')}" onclick="cDel('ev',this.dataset.id,this.dataset.nome)">Excluir</button></div></td></tr>`).join('')||'<tr><td colspan="6" style="text-align:center;padding:20px;color:var(--muted);">Nenhum evento</td></tr>';
   // mobile
   document.getElementById('ev-mob').innerHTML=list.map(e=>`
     <div class="mob-card">
       <div class="mob-card-top"><span class="mob-card-name">${e.nome}</span>${stB(e.status)}</div>
       <div class="mob-card-meta">${e.org_nome||'—'} · ${fmt(e.data_inicio)} · ${fmtIng(e.tipo_ingresso,e.preco)}</div>
-      <div class="mob-card-actions"><button class="ab" onclick='eEv(${JSON.stringify(e)})'>Editar</button><button class="ab ab-del" onclick="cDel('ev','${e.id}','${e.nome.replace(/'/g,"\\'")}')">Excluir</button></div>
+      <div class="mob-card-actions"><button class="ab" data-id="${e.id}" onclick="eEvById(this.dataset.id)">Editar</button><button class="ab ab-del" data-id="${e.id}" data-nome="${(e.nome||'').replace(/"/g,'&quot;')}" onclick="cDel('ev',this.dataset.id,this.dataset.nome)">Excluir</button></div>
     </div>`).join('')||'<div class="empty"><div class="empty-icon">🎵</div>Nenhum evento</div>';
 }
 function fEv(q){renderEvTable(EVTS.filter(e=>e.nome.toLowerCase().includes(q.toLowerCase())||(e.org_nome||'').toLowerCase().includes(q.toLowerCase())));}
 
 // ── ORG TABLE ──
 function renderOrgTable(list){
+  list.forEach(o => { ORGS_MAP[o.id] = o; });
   document.getElementById('org-desk').innerHTML=list.map(o=>`
     <tr><td>${o.nome}</td><td>${o.cidade||'—'}, ${o.estado||''}</td><td><span class="badge ${o.plano==='pro'?'b-pro':'b-free'}">${o.plano==='pro'?'Pro':'Grátis'}</span></td><td style="color:var(--muted);">${o.instagram||'—'}</td>
-    <td><div class="acts"><button class="ab" onclick='eOrg(${JSON.stringify(o)})'>Editar</button><button class="ab ab-del" onclick="cDel('org','${o.id}','${o.nome.replace(/'/g,"\\'")}')">Excluir</button></div></td></tr>`).join('')||'<tr><td colspan="5" style="text-align:center;padding:20px;color:var(--muted);">Nenhum organizador</td></tr>';
+    <td><div class="acts"><button class="ab" data-id="${o.id}" onclick="eOrgById(this.dataset.id)">Editar</button><button class="ab ab-del" data-id="${o.id}" data-nome="${(o.nome||'').replace(/"/g,'&quot;')}" onclick="cDel('org',this.dataset.id,this.dataset.nome)">Excluir</button></div></td></tr>`).join('')||'<tr><td colspan="5" style="text-align:center;padding:20px;color:var(--muted);">Nenhum organizador</td></tr>';
   document.getElementById('org-mob').innerHTML=list.map(o=>`
     <div class="mob-card">
       <div class="mob-card-top"><span class="mob-card-name">${o.nome}</span><span class="badge ${o.plano==='pro'?'b-pro':'b-free'}">${o.plano==='pro'?'Pro':'Grátis'}</span></div>
       <div class="mob-card-meta">${o.cidade||'—'}, ${o.estado||''} · ${o.instagram||'—'}</div>
-      <div class="mob-card-actions"><button class="ab" onclick='eOrg(${JSON.stringify(o)})'>Editar</button><button class="ab ab-del" onclick="cDel('org','${o.id}','${o.nome.replace(/'/g,"\\'")}')">Excluir</button></div>
+      <div class="mob-card-actions"><button class="ab" data-id="${o.id}" onclick="eOrgById(this.dataset.id)">Editar</button><button class="ab ab-del" data-id="${o.id}" data-nome="${(o.nome||'').replace(/"/g,'&quot;')}" onclick="cDel('org',this.dataset.id,this.dataset.nome)">Excluir</button></div>
     </div>`).join('')||'<div class="empty"><div class="empty-icon">🏠</div>Nenhum organizador</div>';
 }
 function fOrg(q){renderOrgTable(ORGS.filter(o=>o.nome.toLowerCase().includes(q.toLowerCase())));}
@@ -484,12 +506,9 @@ function goTo(s,el){
   document.querySelectorAll(`[onclick*="'${s}'"]`).forEach(x=>x.classList.add('on'));
   const t={dashboard:'Dashboard',eventos:'Eventos',organizadores:'Organizadores'};
   document.getElementById('ptitle').textContent=t[s];
-  const ma=document.getElementById('mact');
-  ma.innerHTML=s==='eventos'
-    ?`<button class="hbtn" onclick="oEvMod()"><svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg><span>Novo evento</span></button>`
-    :s==='organizadores'
-    ?`<button class="hbtn" onclick="oOrgMod()"><svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg><span>Novo organizador</span></button>`
-    :'';
+  // Botões de ação fixos — visibilidade por tela
+  document.getElementById('btn-novo-ev').style.display  = s==='eventos' ? 'inline-flex' : 'none';
+  document.getElementById('btn-novo-org').style.display = s==='organizadores' ? 'inline-flex' : 'none';
 }
 
 // ── TOAST ──
@@ -591,12 +610,29 @@ async function doDel(tipo,id){
   renderDash(null,null);cMod('mo-del');toast('✓ Excluído');
 }
 
-// ── Fechar modal clicando no overlay ──
+// ── Bindings dos botões de ação (depois do DOM pronto) ──
 document.addEventListener('DOMContentLoaded', function() {
+  // Botões novo evento / novo organizador
+  document.getElementById('btn-novo-ev').addEventListener('click', function() { oEvMod(); });
+  document.getElementById('btn-novo-org').addEventListener('click', function() { oOrgMod(); });
+
+  // Fechar modal clicando no overlay
   document.querySelectorAll('.mo').forEach(function(o) {
     o.addEventListener('click', function(e) {
       if (e.target === o) o.classList.remove('open');
     });
+  });
+
+  // Swipe down para fechar modais no mobile
+  document.querySelectorAll('.modal').forEach(function(m) {
+    var ts = 0;
+    m.addEventListener('touchstart', function(e) { ts = e.touches[0].clientY; }, {passive:true});
+    m.addEventListener('touchend',   function(e) {
+      if (e.changedTouches[0].clientY - ts > 60) {
+        var mo = m.closest('.mo');
+        if (mo) mo.classList.remove('open');
+      }
+    }, {passive:true});
   });
 });
 </script>
@@ -692,5 +728,6 @@ document.addEventListener('DOMContentLoaded', function() {
 </div>
 
 <div id="toast"></div>
+
 </body>
 </html>
