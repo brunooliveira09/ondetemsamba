@@ -336,7 +336,7 @@ const SB_URL = 'https://cwdjdvsdswpisqidcayn.supabase.co';  // ← Project URL
 const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN3ZGpkdnNkc3dwaXNxaWRjYXluIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc4MTMwMjQ4MSwiZXhwIjoyMDk2ODc4NDgxfQ._pEN6MxbuFGW7K_O52eWOrf4qMBnm1MUGViWDQPpYg0';            // ← service_role secret
 // ═══════════════════════════════════════════════
 let sbClient=null;
-function getSB(){if(!sbClient&&SB_URL!=='https://SEU_PROJECT_ID.supabase.co')sbClient=window.supabase?.createClient(SB_URL,SB_KEY);return sbClient;}
+function getSB(){if(!sbClient&&SB_URL!=='https://cwdjdvsdswpisqidcayn.supabase.co')sbClient=window.supabase?.createClient(SB_URL,SB_KEY);return sbClient;}
 
 // ── DRAWER ──
 function toggleDrawer(open){
