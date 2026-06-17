@@ -162,10 +162,9 @@ nav{flex:1;padding:4px 0;}
 .chart-pad{padding-bottom:24px;padding-top:20px;padding-left:14px;padding-right:14px;}
 
 /* ─── MODAL ─── */
-.mo{position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,.65);display:flex;align-items:flex-end;justify-content:center;opacity:0;pointer-events:none;transition:opacity .22s;}
-.mo.open{opacity:1;pointer-events:all;}
-.modal{background:var(--card);border:1px solid var(--border);border-radius:20px 20px 0 0;width:100%;max-width:560px;max-height:92vh;overflow-y:auto;-webkit-overflow-scrolling:touch;transform:translateY(40px);transition:transform .25s cubic-bezier(.34,1.1,.64,1);padding-bottom:env(safe-area-inset-bottom,16px);}
-.mo.open .modal{transform:translateY(0);}
+.mo{position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,.65);display:none;align-items:flex-end;justify-content:center;}
+.mo.open{display:flex;}
+.modal{background:var(--card);border:1px solid var(--border);border-radius:20px 20px 0 0;width:100%;max-width:560px;max-height:92vh;overflow-y:auto;-webkit-overflow-scrolling:touch;padding-bottom:env(safe-area-inset-bottom,16px);}
 .modal-handle{display:flex;justify-content:center;padding:10px 0 4px;}
 .modal-handle::before{content:'';width:36px;height:3px;background:rgba(232,135,42,.25);border-radius:2px;}
 .mh{padding:0 18px 14px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--border);}
@@ -275,11 +274,11 @@ nav{flex:1;padding:4px 0;}
     <div id="mhd">
       <h1 id="ptitle">Dashboard</h1>
       <div id="mact">
-        <button id="btn-novo-ev"  class="hbtn" style="display:none;">
+        <button id="btn-novo-ev"  class="hbtn" style="display:none;" onclick="oEvMod()">
           <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" fill="none" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
           <span>Novo evento</span>
         </button>
-        <button id="btn-novo-org" class="hbtn" style="display:none;">
+        <button id="btn-novo-org" class="hbtn" style="display:none;" onclick="oOrgMod()">
           <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" fill="none" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
           <span>Novo organizador</span>
         </button>
@@ -345,8 +344,7 @@ nav{flex:1;padding:4px 0;}
 // Supabase → Settings → API
 // ═══════════════════════════════════════════════
 const SB_URL = 'https://cwdjdvsdswpisqidcayn.supabase.co';  // ← Project URL
-const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN3ZGpkdnNkc3dwaXNxaWRjYXluIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc4MTMwMjQ4MSwiZXhwIjoyMDk2ODc4NDgxfQ._pEN6MxbuFGW7K_O52eWOrf4qMBnm1MUGViWDQPpYg0';            // ← service_role secret
-// ═══════════════════════════════════════════════
+const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN3ZGpkdnNkc3dwaXNxaWRjYXluIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc4MTMwMjQ4MSwiZXhwIjoyMDk2ODc4NDgxfQ._pEN6MxbuFGW7K_O52eWOrf4qMBnm1MUGViWDQPpYg0';            // ← service_role secret// ═══════════════════════════════════════════════
 let sbClient=null;
 function getSB(){if(!sbClient&&SB_URL!=='https://SEU_PROJECT_ID.supabase.co')sbClient=window.supabase?.createClient(SB_URL,SB_KEY);return sbClient;}
 
@@ -515,8 +513,16 @@ function goTo(s,el){
 function toast(msg,ok=true){const t=document.getElementById('toast');t.textContent=msg;t.className=ok?'ok show':'er show';setTimeout(()=>t.className=ok?'ok':'er',3000);}
 
 // ── MODALs ──
-function oMod(id){document.getElementById(id).classList.add('open');}
-function cMod(id){document.getElementById(id).classList.remove('open');}
+function oMod(id){
+  var el = document.getElementById(id);
+  if(!el){ console.error('Modal não encontrado:', id); return; }
+  el.classList.add('open');
+  console.log('Modal aberto:', id, el.classList);
+}
+function cMod(id){
+  var el = document.getElementById(id);
+  if(el) el.classList.remove('open');
+}
 document.querySelectorAll('.mo').forEach(o=>o.addEventListener('click',e=>{if(e.target===o)o.classList.remove('open');}));
 // swipe down to close modals
 document.querySelectorAll('.modal').forEach(m=>{let ts=0;m.addEventListener('touchstart',e=>{ts=e.touches[0].clientY;},{passive:true});m.addEventListener('touchend',e=>{if(e.changedTouches[0].clientY-ts>60)m.closest('.mo')?.classList.remove('open');},{passive:true});});
@@ -612,10 +618,6 @@ async function doDel(tipo,id){
 
 // ── Bindings dos botões de ação (depois do DOM pronto) ──
 document.addEventListener('DOMContentLoaded', function() {
-  // Botões novo evento / novo organizador
-  document.getElementById('btn-novo-ev').addEventListener('click', function() { oEvMod(); });
-  document.getElementById('btn-novo-org').addEventListener('click', function() { oOrgMod(); });
-
   // Fechar modal clicando no overlay
   document.querySelectorAll('.mo').forEach(function(o) {
     o.addEventListener('click', function(e) {
