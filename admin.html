@@ -162,8 +162,23 @@ nav{flex:1;padding:4px 0;}
 .chart-pad{padding-bottom:24px;padding-top:20px;padding-left:14px;padding-right:14px;}
 
 /* ─── MODAL ─── */
-.mo{position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,.65);display:none;align-items:flex-end;justify-content:center;}
-.mo.open{display:flex;}
+.mo{
+  position:fixed !important;
+  top:0 !important;
+  left:0 !important;
+  right:0 !important;
+  bottom:0 !important;
+  display:none;
+  align-items:flex-end;
+  justify-content:center;
+  background:rgba(0,0,0,.65);
+  z-index:2147483647 !important;
+  isolation:isolate;
+}
+
+.mo.open{
+  display:flex !important;
+}
 .modal{background:var(--card);border:1px solid var(--border);border-radius:20px 20px 0 0;width:100%;max-width:560px;max-height:92vh;overflow-y:auto;-webkit-overflow-scrolling:touch;padding-bottom:env(safe-area-inset-bottom,16px);}
 .modal-handle{display:flex;justify-content:center;padding:10px 0 4px;}
 .modal-handle::before{content:'';width:36px;height:3px;background:rgba(232,135,42,.25);border-radius:2px;}
@@ -201,6 +216,16 @@ nav{flex:1;padding:4px 0;}
 .empty-icon{font-size:32px;margin-bottom:8px;}
 </style>
 </head>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  ['mo-ev', 'mo-org', 'mo-del'].forEach(id => {
+    const modal = document.getElementById(id);
+    if (modal) document.body.appendChild(modal);
+  });
+});
+</script>
+  
 <body>
 
 <!-- LOGIN -->
@@ -515,11 +540,22 @@ function toast(msg,ok=true){const t=document.getElementById('toast');t.textConte
 
 // ── MODALs ──
 function oMod(id){
-  var el = document.getElementById(id);
-  if(!el){ console.error('Modal não encontrado:', id); return; }
+  const el = document.getElementById(id);
+
+  if(!el){
+    console.error('Modal não encontrado:', id);
+    return;
+  }
+
   el.classList.add('open');
-  console.log('Modal aberto:', id, el.classList);
+
+  console.log({
+    modal: id,
+    zIndex: getComputedStyle(el).zIndex,
+    display: getComputedStyle(el).display
+  });
 }
+
 function cMod(id){
   var el = document.getElementById(id);
   if(el) el.classList.remove('open');
