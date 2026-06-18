@@ -21,11 +21,11 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
 input,select,textarea,button{font-family:'Space Grotesk',sans-serif;-webkit-appearance:none;}
 
 /* ─── LAYOUT ─── */
-#app{display:flex;height:100vh;position:relative;z-index:1;}
+#app{display:flex;height:100vh;}
 
 /* ─── SIDEBAR (desktop) ─── */
 #sb{width:210px;background:var(--surface);border-right:1px solid var(--border);
-  display:flex;flex-direction:column;flex-shrink:0;transition:transform .25s;}
+  display:flex;flex-direction:column;flex-shrink:0;}
 .sb-brand{padding:16px 14px 12px;display:flex;align-items:center;gap:8px;border-bottom:1px solid var(--border);}
 .sb-dot{width:24px;height:24px;border-radius:50%;background:var(--amber);display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:0 0 10px var(--glow);}
 .sb-dot svg{width:12px;height:12px;fill:var(--ink);}
@@ -56,9 +56,9 @@ nav{flex:1;padding:4px 0;}
 #ham-btn span{display:block;width:20px;height:2px;background:var(--cream);border-radius:1px;transition:all .2s;}
 
 /* ─── DRAWER MOBILE ─── */
-#drawer{position:fixed;top:0;left:0;bottom:0;width:240px;z-index:400;
+#drawer{position:fixed;top:0;left:-240px;bottom:0;width:240px;z-index:400;
   background:var(--surface);border-right:1px solid var(--border);
-  transform:translateX(-100%);transition:transform .25s;display:flex;flex-direction:column;}
+  transition:left .25s;display:flex;flex-direction:column;}
 #drawer-overlay{position:fixed;inset:0;z-index:350;background:rgba(0,0,0,.55);opacity:0;pointer-events:none;transition:opacity .2s;}
 #drawer-overlay.on{opacity:1;pointer-events:all;}
 .drawer-brand{padding:16px 14px 12px;display:flex;align-items:center;gap:8px;border-bottom:1px solid var(--border);}
@@ -353,7 +353,7 @@ function getSB(){if(!sbClient&&SB_URL!=='https://SEU_PROJECT_ID.supabase.co')sbC
 function toggleDrawer(open){
   const d=document.getElementById('drawer');
   const ov=document.getElementById('drawer-overlay');
-  d.style.transform=open?'translateX(0)':'translateX(-100%)';
+  d.style.left=open?'0':'-240px';
   ov.classList.toggle('on',open);
 }
 
