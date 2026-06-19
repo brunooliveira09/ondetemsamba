@@ -3,12 +3,12 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1"/>
-<title>Onde Tem Samba — Encontre o samba perto de você</title>
+<title>Onde Tem Samba — Samba pelo WhatsApp</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap"/>
 <style>
 *{box-sizing:border-box;margin:0;padding:0;}
-:root{--a:#E8872A;--a2:#F5A94A;--ink:#0D0A07;--cream:#F4EBD8;--muted:rgba(244,235,216,.5);--border:rgba(232,135,42,.18);}
+:root{--a:#E8872A;--a2:#F5A94A;--ink:#0D0A07;--cream:#F4EBD8;--muted:rgba(244,235,216,.5);--border:rgba(232,135,42,.18);--wgreen:#25D366;--wdark:#128C7E;}
 html{scroll-behavior:smooth;}
 body{background:var(--ink);color:var(--cream);font-family:'Space Grotesk',sans-serif;overflow-x:hidden;}
 body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
@@ -17,7 +17,7 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
 /* NAV */
 nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:14px 40px;
   display:flex;align-items:center;justify-content:space-between;
-  background:rgba(13,10,7,.75);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);}
+  background:rgba(13,10,7,.8);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);}
 .nav-brand{display:flex;align-items:center;gap:8px;}
 .nav-dot{width:26px;height:26px;border-radius:50%;background:var(--a);display:flex;align-items:center;justify-content:center;box-shadow:0 0 10px rgba(232,135,42,.4);}
 .nav-dot svg{width:13px;height:13px;fill:var(--ink);}
@@ -30,143 +30,100 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:14px 40px;
 /* HERO */
 #hero{min-height:100vh;display:flex;flex-direction:column;align-items:center;
   justify-content:center;text-align:center;padding:120px 20px 60px;position:relative;}
-.hero-glow{position:absolute;top:30%;left:50%;transform:translate(-50%,-50%);
-  width:600px;height:400px;border-radius:50%;
-  background:radial-gradient(ellipse,rgba(232,135,42,.1) 0%,transparent 70%);pointer-events:none;}
+.hero-glow{position:absolute;top:35%;left:50%;transform:translate(-50%,-50%);
+  width:700px;height:500px;border-radius:50%;pointer-events:none;
+  background:radial-gradient(ellipse,rgba(37,211,102,.07) 0%,rgba(232,135,42,.06) 40%,transparent 70%);}
 .hero-grid{position:absolute;inset:0;pointer-events:none;
-  background:linear-gradient(rgba(232,135,42,.04) 1px,transparent 1px),
-             linear-gradient(90deg,rgba(232,135,42,.04) 1px,transparent 1px);
-  background-size:40px 40px;}
+  background:linear-gradient(rgba(232,135,42,.03) 1px,transparent 1px),
+             linear-gradient(90deg,rgba(232,135,42,.03) 1px,transparent 1px);
+  background-size:48px 48px;}
 .hero-badge{display:inline-flex;align-items:center;gap:6px;padding:5px 14px;
-  border-radius:20px;background:rgba(232,135,42,.1);border:1px solid rgba(232,135,42,.25);
-  font-size:11px;color:var(--a);font-weight:600;letter-spacing:.08em;margin-bottom:24px;}
-.pulse{width:6px;height:6px;border-radius:50%;background:var(--a);box-shadow:0 0 6px var(--a);animation:pulse 2s infinite;}
+  border-radius:20px;background:rgba(37,211,102,.1);border:1px solid rgba(37,211,102,.3);
+  font-size:11px;color:#25D366;font-weight:600;letter-spacing:.08em;margin-bottom:24px;}
+.pulse{width:6px;height:6px;border-radius:50%;background:#25D366;box-shadow:0 0 6px #25D366;animation:pulse 2s infinite;}
 @keyframes pulse{0%,100%{opacity:1;}50%{opacity:.3;}}
 h1{font-size:clamp(34px,6vw,68px);font-weight:700;line-height:1.05;letter-spacing:-.02em;margin-bottom:20px;}
 h1 em{color:var(--a);font-style:normal;text-shadow:0 0 40px rgba(232,135,42,.3);}
-.hero-sub{font-size:16px;color:var(--muted);max-width:480px;line-height:1.65;margin-bottom:36px;}
+.hero-sub{font-size:16px;color:var(--muted);max-width:500px;line-height:1.65;margin-bottom:36px;}
 .hero-btns{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;}
-.btn-p{padding:13px 28px;background:var(--a);color:var(--ink);border:none;border-radius:8px;
+.btn-wa{padding:13px 28px;background:#25D366;color:#fff;border:none;border-radius:8px;
   font-size:14px;font-weight:700;cursor:pointer;font-family:'Space Grotesk',sans-serif;
-  text-decoration:none;display:inline-block;transition:all .15s;box-shadow:0 0 20px rgba(232,135,42,.3);}
-.btn-p:hover{background:var(--a2);transform:translateY(-1px);}
+  text-decoration:none;display:inline-flex;align-items:center;gap:8px;transition:all .15s;box-shadow:0 0 20px rgba(37,211,102,.3);}
+.btn-wa:hover{background:#20b858;box-shadow:0 0 30px rgba(37,211,102,.5);transform:translateY(-1px);}
+.btn-wa svg{width:18px;height:18px;fill:#fff;flex-shrink:0;}
 .btn-g{padding:13px 28px;background:transparent;color:var(--cream);
   border:1px solid rgba(232,135,42,.3);border-radius:8px;font-size:14px;font-weight:600;
   cursor:pointer;font-family:'Space Grotesk',sans-serif;text-decoration:none;display:inline-block;transition:all .15s;}
 .btn-g:hover{border-color:var(--a);color:var(--a);}
 
-/* ── MAPA FAKE ── */
-.hero-mock{margin-top:52px;width:100%;max-width:820px;border-radius:16px;overflow:hidden;
-  border:1px solid var(--border);box-shadow:0 0 60px rgba(232,135,42,.12);position:relative;}
+/* ── HERO VISUAL — conversa WhatsApp ── */
+.hero-visual{margin-top:48px;width:100%;max-width:420px;position:relative;}
 
-/* topbar do mock */
-.mock-top{background:rgba(13,10,7,.92);padding:9px 14px;display:flex;align-items:center;gap:10px;}
-.mock-brand{display:flex;align-items:center;gap:6px;}
-.mock-brand-dot{width:18px;height:18px;border-radius:50%;background:var(--a);display:flex;align-items:center;justify-content:center;}
-.mock-brand-dot svg{width:9px;height:9px;fill:var(--ink);}
-.mock-brand-name{font-size:11px;font-weight:700;color:var(--cream);}
-.mock-brand-name em{color:var(--a);font-style:normal;}
-.mock-pipe{width:1px;height:16px;background:rgba(232,135,42,.25);}
-.mock-search{flex:1;height:24px;background:rgba(232,135,42,.08);border-radius:20px;
-  display:flex;align-items:center;padding:0 10px;gap:5px;}
-.mock-search-dot{width:8px;height:8px;border-radius:50%;border:1px solid rgba(244,235,216,.3);}
-.mock-search-line{flex:1;height:1px;background:rgba(244,235,216,.1);}
-.mock-filters{display:flex;gap:4px;}
-.mock-fb{height:20px;padding:0 8px;border-radius:10px;font-size:9px;font-weight:700;
-  display:flex;align-items:center;letter-spacing:.04em;}
-.mock-fb.on{background:var(--a);color:var(--ink);}
-.mock-fb.off{background:transparent;border:1px solid rgba(232,135,42,.25);color:rgba(244,235,216,.5);}
+/* tela de celular */
+.phone-frame{background:#111;border-radius:36px;padding:12px;
+  box-shadow:0 0 0 1px rgba(255,255,255,.08),0 24px 80px rgba(0,0,0,.7),0 0 60px rgba(37,211,102,.08);
+  position:relative;}
+.phone-notch{width:80px;height:6px;background:#222;border-radius:3px;margin:0 auto 10px;}
+.phone-screen{background:#ECE5DD;border-radius:24px;overflow:hidden;}
 
-/* área do mapa */
-.mock-map-area{height:340px;background:#0D0A07;position:relative;overflow:hidden;}
+/* header do whatsapp */
+.wa-header{background:#075E54;padding:10px 14px;display:flex;align-items:center;gap:10px;}
+.wa-back{color:rgba(255,255,255,.7);font-size:18px;line-height:1;}
+.wa-avatar{width:34px;height:34px;border-radius:50%;background:#25D366;
+  display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;}
+.wa-info{flex:1;}
+.wa-name{font-size:13px;font-weight:600;color:#fff;}
+.wa-status{font-size:11px;color:rgba(255,255,255,.65);}
 
-/* grid estilo mapa */
-.mock-map-area::before{content:'';position:absolute;inset:0;
-  background:
-    repeating-linear-gradient(0deg,transparent,transparent 39px,rgba(232,135,42,.06) 39px,rgba(232,135,42,.06) 40px),
-    repeating-linear-gradient(90deg,transparent,transparent 39px,rgba(232,135,42,.06) 39px,rgba(232,135,42,.06) 40px);}
+/* chat area */
+.wa-chat{background:#ECE5DD;padding:10px 10px 4px;display:flex;flex-direction:column;gap:6px;
+  background-image:url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23000000' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");}
 
-/* ruas simuladas */
-.mock-road{position:absolute;background:rgba(232,135,42,.1);}
-.mock-road.h{height:2px;left:0;right:0;}
-.mock-road.v{width:2px;top:0;bottom:0;}
+/* balão usuário */
+.wa-msg{display:flex;flex-direction:column;max-width:82%;}
+.wa-msg.user{align-self:flex-end;}
+.wa-msg.bot{align-self:flex-start;}
+.wa-bubble{padding:7px 10px 4px;border-radius:8px;font-size:12.5px;line-height:1.45;position:relative;}
+.wa-msg.user .wa-bubble{background:#DCF8C6;border-radius:8px 0 8px 8px;color:#111;}
+.wa-msg.bot  .wa-bubble{background:#fff;border-radius:0 8px 8px 8px;color:#111;}
+.wa-time{font-size:10px;color:rgba(0,0,0,.45);text-align:right;margin-top:2px;padding-right:2px;
+  display:flex;align-items:center;justify-content:flex-end;gap:3px;}
+.wa-check{color:#53bdeb;}
 
-/* blocos de quarteirão */
-.mock-block{position:absolute;background:rgba(232,135,42,.04);border:1px solid rgba(232,135,42,.06);border-radius:3px;}
+/* resultado do bot */
+.wa-result{background:#fff;border-radius:0 8px 8px 8px;padding:8px 10px;font-size:12px;color:#111;line-height:1.5;}
+.wa-result-title{font-weight:700;color:#075E54;margin-bottom:4px;font-size:12.5px;}
+.wa-result-item{padding:5px 0;border-bottom:1px solid rgba(0,0,0,.06);display:flex;align-items:flex-start;gap:6px;}
+.wa-result-item:last-child{border-bottom:none;}
+.wa-result-icon{font-size:14px;flex-shrink:0;margin-top:1px;}
+.wa-result-info{flex:1;}
+.wa-result-name{font-weight:600;color:#111;font-size:12px;}
+.wa-result-meta{font-size:11px;color:#666;margin-top:1px;}
+.wa-result-badge{display:inline-block;font-size:10px;padding:1px 6px;border-radius:8px;
+  background:#25D366;color:#fff;font-weight:600;margin-left:4px;}
+.wa-result-badge.pago{background:#E8872A;}
+.wa-typing{display:flex;align-items:center;gap:3px;padding:8px 12px;background:#fff;
+  border-radius:0 8px 8px 8px;width:52px;}
+.wa-dot{width:7px;height:7px;border-radius:50%;background:#aaa;animation:typing 1.2s infinite;}
+.wa-dot:nth-child(2){animation-delay:.2s;}
+.wa-dot:nth-child(3){animation-delay:.4s;}
+@keyframes typing{0%,60%,100%{transform:translateY(0);}30%{transform:translateY(-5px);}}
 
-/* PINS animados */
-.mock-pin{position:absolute;transform:translateX(-50%);cursor:pointer;}
-.mock-pin-head{width:30px;height:30px;border-radius:50% 50% 50% 0;transform:rotate(-45deg);
-  background:var(--a);border:2px solid rgba(255,255,255,.45);
-  display:flex;align-items:center;justify-content:center;
-  box-shadow:0 0 14px rgba(232,135,42,.55),0 2px 6px rgba(0,0,0,.5);
-  animation:pinFloat 3s ease-in-out infinite;}
-.mock-pin-head span{transform:rotate(45deg);font-size:12px;line-height:1;}
-@keyframes pinFloat{0%,100%{transform:rotate(-45deg) translateY(0);}50%{transform:rotate(-45deg) translateY(-5px);}}
-.mock-pin:nth-child(2) .mock-pin-head{animation-delay:.7s;}
-.mock-pin:nth-child(3) .mock-pin-head{animation-delay:1.4s;}
-.mock-pin:nth-child(4) .mock-pin-head{animation-delay:2.1s;}
-.mock-pin:nth-child(5) .mock-pin-head{animation-delay:.35s;}
-
-/* glow ao redor do pin ativo */
-.mock-pin.active .mock-pin-head{
-  background:var(--a);
-  box-shadow:0 0 0 6px rgba(232,135,42,.15),0 0 20px rgba(232,135,42,.6);}
-
-/* zoom controls */
-.mock-zoom{position:absolute;bottom:60px;right:12px;z-index:2;
-  background:rgba(13,10,7,.88);border:1px solid rgba(232,135,42,.3);
-  border-radius:8px;overflow:hidden;}
-.mock-zoom-btn{width:28px;height:28px;display:flex;align-items:center;justify-content:center;
-  font-size:16px;color:var(--a);font-weight:300;}
-.mock-zoom-btn:first-child{border-bottom:1px solid rgba(232,135,42,.2);}
-
-/* MODAL SIMULADO */
-.mock-modal{
-  position:absolute;bottom:0;left:0;right:0;
-  background:rgba(14,8,3,.97);
-  border-top:1px solid var(--border);
-  border-radius:14px 14px 0 0;
-  padding:0;
-  transform:translateY(100%);
-  transition:transform .4s cubic-bezier(.34,1.1,.64,1);
-  z-index:10;
-}
-.mock-modal.show{transform:translateY(0);}
-.mock-modal-handle{display:flex;justify-content:center;padding:8px 0 4px;}
-.mock-modal-handle::before{content:'';width:32px;height:3px;background:rgba(232,135,42,.25);border-radius:2px;}
-.mock-modal-img{width:100%;height:120px;object-fit:cover;
-  background:linear-gradient(135deg,#2A1005,#5C3214);
-  display:flex;align-items:center;justify-content:center;
-  font-size:36px;position:relative;overflow:hidden;}
-.mock-modal-img::after{content:'';position:absolute;inset:0;pointer-events:none;
-  background:repeating-linear-gradient(0deg,transparent,transparent 3px,rgba(0,0,0,.08) 3px,rgba(0,0,0,.08) 4px);}
-.mock-modal-img::before{content:'';position:absolute;bottom:0;left:0;right:0;height:40px;
-  background:linear-gradient(transparent,rgba(14,8,3,.97));z-index:1;}
-.mock-modal-tags{position:absolute;bottom:8px;left:12px;z-index:2;display:flex;gap:4px;}
-.mock-tag{font-size:9px;padding:2px 6px;border-radius:6px;background:var(--a);color:var(--ink);font-weight:700;}
-.mock-modal-body{padding:12px 14px 14px;}
-.mock-modal-header{display:flex;justify-content:space-between;align-items:flex-start;gap:6px;margin-bottom:8px;}
-.mock-modal-name{font-size:13px;font-weight:700;color:var(--cream);line-height:1.25;}
-.mock-modal-badge{font-size:9px;padding:2px 7px;border-radius:6px;
-  background:rgba(232,135,42,.14);color:var(--a);border:1px solid rgba(232,135,42,.3);
-  font-weight:600;white-space:nowrap;margin-top:1px;}
-.mock-modal-meta{display:grid;grid-template-columns:1fr 1fr;gap:5px 8px;margin-bottom:10px;}
-.mock-meta-item{font-size:10px;color:rgba(244,235,216,.55);display:flex;align-items:center;gap:4px;}
-.mock-meta-item span{color:rgba(244,235,216,.8);}
-.mock-modal-btn{width:100%;padding:8px;background:var(--a);color:var(--ink);border:none;
-  border-radius:6px;font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;
-  cursor:default;font-family:'Space Grotesk',sans-serif;}
-
-/* atributo do OSM */
-.mock-attr{position:absolute;bottom:4px;right:8px;font-size:9px;color:rgba(244,235,216,.2);z-index:1;}
+/* animação das mensagens */
+.wa-msg{opacity:0;transform:translateY(10px);animation:msgIn .4s forwards;}
+.wa-msg:nth-child(1){animation-delay:.3s;}
+.wa-msg:nth-child(2){animation-delay:1s;}
+.wa-msg:nth-child(3){animation-delay:2s;}
+.wa-msg:nth-child(4){animation-delay:3.2s;}
+@keyframes msgIn{to{opacity:1;transform:translateY(0);}}
 
 /* SEÇÕES */
 section{padding:80px 20px;position:relative;z-index:1;}
-.sec-inner{max-width:1000px;margin:0 auto;}
+.sec-inner{max-width:960px;margin:0 auto;}
 .sec-label{font-size:11px;font-weight:700;color:var(--a);letter-spacing:.1em;text-transform:uppercase;margin-bottom:10px;}
 h2{font-size:clamp(26px,4vw,40px);font-weight:700;line-height:1.15;letter-spacing:-.01em;margin-bottom:14px;}
 h2 em{color:var(--a);font-style:normal;}
+h2 em.g{color:#25D366;}
 .sec-sub{font-size:15px;color:var(--muted);max-width:500px;line-height:1.65;}
 
 /* COMO FUNCIONA */
@@ -174,13 +131,26 @@ h2 em{color:var(--a);font-style:normal;}
 .steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:18px;margin-top:44px;}
 .step{background:rgba(232,135,42,.04);border:1px solid var(--border);border-radius:12px;padding:22px;position:relative;overflow:hidden;}
 .step::before{content:'';position:absolute;top:0;left:0;width:3px;height:100%;background:var(--a);}
+.step.wa-step::before{background:#25D366;}
 .step-n{font-size:11px;font-weight:700;color:var(--a);letter-spacing:.1em;margin-bottom:8px;}
-.step-icon{font-size:24px;margin-bottom:8px;display:block;}
+.wa-step .step-n{color:#25D366;}
+.step-icon{font-size:26px;margin-bottom:8px;display:block;}
 .step h3{font-size:14px;font-weight:700;margin-bottom:5px;}
 .step p{font-size:12px;color:var(--muted);line-height:1.6;}
 
+/* EXEMPLOS DE PERGUNTAS */
+#exemplos{text-align:center;}
+.questions-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;margin-top:40px;}
+.q-card{background:rgba(37,211,102,.05);border:1px solid rgba(37,211,102,.2);border-radius:12px;
+  padding:16px 18px;text-align:left;display:flex;align-items:flex-start;gap:10px;transition:all .2s;}
+.q-card:hover{border-color:rgba(37,211,102,.45);background:rgba(37,211,102,.09);}
+.q-icon{font-size:20px;flex-shrink:0;margin-top:2px;}
+.q-text{font-size:13px;color:var(--cream);line-height:1.45;font-style:italic;}
+.q-text strong{font-style:normal;color:#25D366;}
+
 /* PARA QUEM */
-.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px;margin-top:44px;}
+#para{background:rgba(26,13,5,.5);}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px;margin-top:40px;}
 .card{border:1px solid var(--border);border-radius:12px;padding:22px;background:rgba(232,135,42,.03);transition:border-color .2s;}
 .card:hover{border-color:rgba(232,135,42,.35);}
 .card-icon{font-size:28px;margin-bottom:10px;}
@@ -188,31 +158,31 @@ h2 em{color:var(--a);font-style:normal;}
 .card p{font-size:12px;color:var(--muted);line-height:1.65;}
 
 /* CAPTURA */
-#captura{text-align:center;}
-.cap-box{max-width:520px;margin:0 auto;background:rgba(232,135,42,.05);
-  border:1px solid var(--border);border-radius:16px;padding:36px 28px;}
+#captura{}
+.cap-box{max-width:500px;margin:0 auto;background:rgba(37,211,102,.05);
+  border:1px solid rgba(37,211,102,.2);border-radius:16px;padding:36px 28px;}
 .cap-box h2{margin-bottom:8px;}
 .cap-box .sec-sub{margin:0 auto 24px;}
 .cap-field{margin-bottom:12px;text-align:left;}
-.cap-field label{display:block;font-size:10px;color:var(--muted);letter-spacing:.06em;
-  text-transform:uppercase;margin-bottom:5px;}
-.cap-input{width:100%;padding:11px 14px;background:rgba(232,135,42,.07);
-  border:1px solid rgba(232,135,42,.2);border-radius:8px;font-size:14px;
+.cap-field label{display:block;font-size:10px;color:var(--muted);letter-spacing:.06em;text-transform:uppercase;margin-bottom:5px;}
+.cap-input{width:100%;padding:11px 14px;background:rgba(255,255,255,.06);
+  border:1px solid rgba(37,211,102,.2);border-radius:8px;font-size:14px;
   color:var(--cream);font-family:'Space Grotesk',sans-serif;outline:none;transition:border-color .15s;}
 .cap-input::placeholder{color:var(--muted);}
-.cap-input:focus{border-color:rgba(232,135,42,.5);}
-.cap-btn{width:100%;padding:12px;background:var(--a);color:var(--ink);border:none;
+.cap-input:focus{border-color:rgba(37,211,102,.5);}
+.cap-btn{width:100%;padding:13px;background:#25D366;color:#fff;border:none;
   border-radius:8px;font-size:14px;font-weight:700;cursor:pointer;
-  font-family:'Space Grotesk',sans-serif;box-shadow:0 0 16px rgba(232,135,42,.3);
-  transition:all .15s;margin-top:4px;letter-spacing:.04em;}
-.cap-btn:hover{background:var(--a2);}
+  font-family:'Space Grotesk',sans-serif;box-shadow:0 0 16px rgba(37,211,102,.25);
+  transition:all .15s;margin-top:4px;display:flex;align-items:center;justify-content:center;gap:8px;}
+.cap-btn svg{width:18px;height:18px;fill:#fff;}
+.cap-btn:hover{background:#20b858;}
 .cap-btn:disabled{opacity:.6;cursor:not-allowed;}
 #cap-ok{display:none;text-align:center;padding:16px 0 8px;}
-#cap-ok .ok-icon{font-size:36px;margin-bottom:10px;}
-#cap-ok p{font-size:14px;font-weight:600;color:var(--a);margin-bottom:4px;}
+#cap-ok .ok-icon{font-size:40px;margin-bottom:10px;}
+#cap-ok p{font-size:15px;font-weight:700;color:#25D366;margin-bottom:4px;}
 #cap-ok small{font-size:12px;color:var(--muted);}
-.cap-hint{font-size:11px;color:var(--muted);margin-top:12px;text-align:center;}
 #cap-err{color:#E53935;font-size:12px;margin-top:8px;display:none;text-align:center;}
+.cap-hint{font-size:11px;color:var(--muted);margin-top:12px;text-align:center;}
 
 /* FOOTER */
 footer{border-top:1px solid var(--border);padding:28px 40px;
@@ -233,7 +203,7 @@ footer p{font-size:11px;color:var(--muted);}
   </div>
   <div class="nav-links">
     <a href="#como">Como funciona</a>
-    <a href="#para">Para quem</a>
+    <a href="#exemplos">Exemplos</a>
     <a href="#captura">Lista de espera</a>
   </div>
 </nav>
@@ -242,173 +212,180 @@ footer p{font-size:11px;color:var(--muted);}
 <section id="hero">
   <div class="hero-glow"></div>
   <div class="hero-grid"></div>
-  <div class="hero-badge"><div class="pulse"></div>EM BREVE NA SUA CIDADE</div>
-  <h1>Encontre o <em>samba</em><br/>perto de você</h1>
-  <p class="hero-sub">O mapa de eventos de samba do Brasil. Pagode, raiz, partido alto — descubra rodas e bares acontecendo agora na sua região.</p>
+  <div class="hero-badge"><div class="pulse"></div>ASSISTENTE NO WHATSAPP</div>
+  <h1>Pergunte onde tem<br/><em>samba</em> hoje</h1>
+  <p class="hero-sub">Pergunte pelo WhatsApp e descubra pagodes, rodas e eventos ao vivo perto de você. Ou explore tudo no mapa interativo — do seu jeito.</p>
   <div class="hero-btns">
-    <a href="#captura" class="btn-p">Garantir meu acesso antecipado</a>
-    <a href="#como" class="btn-g">Como funciona</a>
+    <a href="#captura" class="btn-wa">
+      <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>
+      Me coloque na lista de espera
+    </a>
+    <a href="#exemplos" class="btn-g">Ver exemplos</a>
   </div>
 
-  <!-- MAPA HERO — SVG estático -->
-  <div style="margin-top:52px;width:100%;max-width:820px;border-radius:16px;overflow:hidden;border:1px solid rgba(232,135,42,.2);box-shadow:0 0 60px rgba(232,135,42,.12);">
-    <!-- topbar fake -->
-    <div style="background:rgba(13,10,7,.95);padding:10px 16px;display:flex;align-items:center;gap:10px;">
-      <div style="width:18px;height:18px;border-radius:50%;background:#E8872A;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
-        <svg viewBox="0 0 24 24" width="9" height="9" style="fill:#0D0A07"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
-      </div>
-      <span style="font-size:12px;font-weight:700;color:#F4EBD8;">onde tem <em style="color:#E8872A;font-style:normal;">samba</em></span>
-      <div style="flex:1;height:22px;background:rgba(232,135,42,.08);border-radius:20px;margin:0 8px;"></div>
-      <div style="display:flex;gap:5px;">
-        <span style="font-size:10px;font-weight:700;padding:3px 10px;border-radius:10px;background:#E8872A;color:#0D0A07;">Todos</span>
-        <span style="font-size:10px;padding:3px 10px;border-radius:10px;border:1px solid rgba(232,135,42,.25);color:rgba(244,235,216,.4);">Hoje</span>
-        <span style="font-size:10px;padding:3px 10px;border-radius:10px;border:1px solid rgba(232,135,42,.25);color:rgba(244,235,216,.4);">Fim de semana</span>
+  <!-- MOCKUP WHATSAPP -->
+  <div class="hero-visual">
+    <div class="phone-frame">
+      <div class="phone-notch"></div>
+      <div class="phone-screen">
+        <!-- header -->
+        <div class="wa-header">
+          <div class="wa-back">‹</div>
+          <div class="wa-avatar">🥁</div>
+          <div class="wa-info">
+            <div class="wa-name">Onde Tem Samba</div>
+            <div class="wa-status">online</div>
+          </div>
+        </div>
+        <!-- chat -->
+        <div class="wa-chat">
+          <!-- usuário pergunta -->
+          <div class="wa-msg user">
+            <div class="wa-bubble">Onde tem samba hoje em Porto Feliz? 🎵</div>
+            <div class="wa-time">19:32 <span class="wa-check">✓✓</span></div>
+          </div>
+          <!-- bot digitando -->
+          <div class="wa-msg bot" style="animation-delay:.8s">
+            <div class="wa-typing"><div class="wa-dot"></div><div class="wa-dot"></div><div class="wa-dot"></div></div>
+          </div>
+          <!-- bot responde -->
+          <div class="wa-msg bot">
+            <div class="wa-result">
+              <div class="wa-result-title">🥁 3 sambas hoje em Porto Feliz</div>
+              <div class="wa-result-item">
+                <div class="wa-result-icon">📍</div>
+                <div class="wa-result-info">
+                  <div class="wa-result-name">Roda de Samba do Léo <span class="wa-result-badge">Grátis</span></div>
+                  <div class="wa-result-meta">Bar do Léo · Centro · A partir das 19h</div>
+                </div>
+              </div>
+              <div class="wa-result-item">
+                <div class="wa-result-icon">📍</div>
+                <div class="wa-result-info">
+                  <div class="wa-result-name">Pagode no Coreto <span class="wa-result-badge pago">R$ 15</span></div>
+                  <div class="wa-result-meta">Praça da Matriz · Centro · 21h</div>
+                </div>
+              </div>
+              <div class="wa-result-item">
+                <div class="wa-result-icon">📍</div>
+                <div class="wa-result-info">
+                  <div class="wa-result-name">Noite do Cavaquinho <span class="wa-result-badge">Grátis</span></div>
+                  <div class="wa-result-meta">Boteco do Tião · Jd. Martelli · 20h</div>
+                </div>
+              </div>
+            </div>
+            <div class="wa-time" style="background:#fff;padding:0 8px 6px;border-radius:0 0 8px 8px;margin-top:-2px;">19:32</div>
+          </div>
+          <!-- seguimento -->
+          <div class="wa-msg user">
+            <div class="wa-bubble">Qual começa mais cedo? 🕐</div>
+            <div class="wa-time">19:33 <span class="wa-check">✓✓</span></div>
+          </div>
+        </div>
       </div>
     </div>
-    <!-- SVG mapa -->
-    <svg viewBox="0 0 820 360" xmlns="http://www.w3.org/2000/svg" style="display:block;width:100%;">
-      <!-- fundo escuro -->
-      <rect width="820" height="360" fill="#0D0A07"/>
-      <!-- grid -->
-      <defs>
-        <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
-          <path d="M 40 0 L 0 0 0 40" fill="none" stroke="rgba(232,135,42,0.06)" stroke-width="1"/>
-        </pattern>
-        <!-- sombra do pin -->
-        <filter id="glow">
-          <feGaussianBlur stdDeviation="4" result="blur"/>
-          <feComposite in="SourceGraphic" in2="blur" operator="over"/>
-        </filter>
-      </defs>
-      <rect width="820" height="360" fill="url(#grid)"/>
-
-      <!-- RUAS principais -->
-      <line x1="0" y1="140" x2="820" y2="140" stroke="rgba(232,135,42,.12)" stroke-width="14"/>
-      <line x1="0" y1="230" x2="820" y2="230" stroke="rgba(232,135,42,.12)" stroke-width="10"/>
-      <line x1="200" y1="0" x2="200" y2="360" stroke="rgba(232,135,42,.12)" stroke-width="14"/>
-      <line x1="450" y1="0" x2="450" y2="360" stroke="rgba(232,135,42,.12)" stroke-width="10"/>
-      <line x1="650" y1="0" x2="650" y2="360" stroke="rgba(232,135,42,.08)" stroke-width="8"/>
-      <line x1="0" y1="310" x2="820" y2="310" stroke="rgba(232,135,42,.08)" stroke-width="7"/>
-
-      <!-- Ruas secundárias -->
-      <line x1="0" y1="60" x2="820" y2="60" stroke="rgba(232,135,42,.05)" stroke-width="6"/>
-      <line x1="100" y1="0" x2="100" y2="360" stroke="rgba(232,135,42,.05)" stroke-width="5"/>
-      <line x1="320" y1="0" x2="320" y2="360" stroke="rgba(232,135,42,.05)" stroke-width="5"/>
-      <line x1="560" y1="0" x2="560" y2="360" stroke="rgba(232,135,42,.05)" stroke-width="5"/>
-      <line x1="730" y1="0" x2="730" y2="360" stroke="rgba(232,135,42,.05)" stroke-width="5"/>
-
-      <!-- QUADRAS -->
-      <rect x="102" y="62" width="96" height="76" rx="3" fill="rgba(232,135,42,.05)" stroke="rgba(232,135,42,.08)" stroke-width="1"/>
-      <rect x="202" y="62" width="116" height="76" rx="3" fill="rgba(232,135,42,.05)" stroke="rgba(232,135,42,.08)" stroke-width="1"/>
-      <rect x="102" y="142" width="96" height="86" rx="3" fill="rgba(232,135,42,.04)" stroke="rgba(232,135,42,.07)" stroke-width="1"/>
-      <rect x="202" y="142" width="116" height="86" rx="3" fill="rgba(232,135,42,.04)" stroke="rgba(232,135,42,.07)" stroke-width="1"/>
-      <rect x="322" y="62" width="126" height="76" rx="3" fill="rgba(232,135,42,.05)" stroke="rgba(232,135,42,.08)" stroke-width="1"/>
-      <rect x="322" y="142" width="126" height="86" rx="3" fill="rgba(232,135,42,.04)" stroke="rgba(232,135,42,.07)" stroke-width="1"/>
-      <rect x="452" y="62" width="96" height="76" rx="3" fill="rgba(232,135,42,.05)" stroke="rgba(232,135,42,.08)" stroke-width="1"/>
-      <rect x="452" y="142" width="96" height="86" rx="3" fill="rgba(232,135,42,.04)" stroke="rgba(232,135,42,.07)" stroke-width="1"/>
-      <rect x="562" y="62" width="86" height="76" rx="3" fill="rgba(232,135,42,.04)" stroke="rgba(232,135,42,.07)" stroke-width="1"/>
-      <rect x="652" y="62" width="76" height="76" rx="3" fill="rgba(232,135,42,.04)" stroke="rgba(232,135,42,.07)" stroke-width="1"/>
-      <rect x="102" y="232" width="96" height="76" rx="3" fill="rgba(232,135,42,.04)" stroke="rgba(232,135,42,.07)" stroke-width="1"/>
-      <rect x="202" y="232" width="116" height="76" rx="3" fill="rgba(232,135,42,.04)" stroke="rgba(232,135,42,.07)" stroke-width="1"/>
-      <rect x="322" y="232" width="126" height="76" rx="3" fill="rgba(232,135,42,.04)" stroke="rgba(232,135,42,.07)" stroke-width="1"/>
-      <rect x="452" y="232" width="96" height="76" rx="3" fill="rgba(232,135,42,.04)" stroke="rgba(232,135,42,.07)" stroke-width="1"/>
-      <rect x="562" y="232" width="166" height="76" rx="3" fill="rgba(232,135,42,.04)" stroke="rgba(232,135,42,.07)" stroke-width="1"/>
-
-      <!-- NOMES DE RUAS -->
-      <text x="410" y="135" text-anchor="middle" fill="rgba(244,235,216,.18)" font-size="10" font-family="sans-serif">Rua Augusta</text>
-      <text x="410" y="224" text-anchor="middle" fill="rgba(244,235,216,.14)" font-size="9" font-family="sans-serif">Av. Paulista</text>
-      <text x="196" y="200" text-anchor="middle" fill="rgba(244,235,216,.14)" font-size="9" font-family="sans-serif" transform="rotate(-90,196,200)">R. da Consolação</text>
-      <text x="446" y="200" text-anchor="middle" fill="rgba(244,235,216,.12)" font-size="9" font-family="sans-serif" transform="rotate(-90,446,200)">R. Pamplona</text>
-
-      <!-- PINS secundários (pequenos, sem destaque) -->
-      <!-- Pin 2 -->
-      <g transform="translate(380,105)" opacity="0.65">
-        <ellipse cx="0" cy="28" rx="6" ry="2" fill="rgba(0,0,0,.4)"/>
-        <path d="M0-18 C-10-18 -10-4 0-4 C10-4 10-18 0-18Z" fill="#B86020" stroke="rgba(255,255,255,.3)" stroke-width="1.5"/>
-        <text x="0" y="-8" text-anchor="middle" font-size="8" fill="#F4EBD8">🎵</text>
-      </g>
-      <!-- Pin 3 -->
-      <g transform="translate(580,180)" opacity="0.55">
-        <path d="M0-16 C-9-16 -9-4 0-4 C9-4 9-16 0-16Z" fill="#B86020" stroke="rgba(255,255,255,.25)" stroke-width="1.5"/>
-        <text x="0" y="-7" text-anchor="middle" font-size="7" fill="#F4EBD8">🎵</text>
-      </g>
-      <!-- Pin 4 -->
-      <g transform="translate(260,280)" opacity="0.5">
-        <path d="M0-14 C-8-14 -8-4 0-4 C8-4 8-14 0-14Z" fill="#8A4010" stroke="rgba(255,255,255,.2)" stroke-width="1.5"/>
-        <text x="0" y="-6" text-anchor="middle" font-size="6" fill="#F4EBD8">🎵</text>
-      </g>
-
-      <!-- PIN PRINCIPAL (ativo, com brilho) -->
-      <g transform="translate(310,140)">
-        <!-- glow -->
-        <circle cx="0" cy="0" r="22" fill="rgba(232,135,42,.12)"/>
-        <circle cx="0" cy="0" r="15" fill="rgba(232,135,42,.18)"/>
-        <!-- sombra -->
-        <ellipse cx="2" cy="30" rx="8" ry="3" fill="rgba(0,0,0,.5)"/>
-        <!-- corpo do pin (gota) -->
-        <path d="M0-28 C-14-28 -14-8 0-8 C14-8 14-28 0-28Z" fill="#E8872A" stroke="rgba(255,255,255,.6)" stroke-width="2"/>
-        <!-- ponteira do pin -->
-        <path d="M-5-8 L5-8 L0 4Z" fill="#E8872A"/>
-        <!-- ícone -->
-        <text x="0" y="-14" text-anchor="middle" font-size="12" fill="#0D0A07">🎵</text>
-        <!-- linha conectora ao balão -->
-        <line x1="14" y1="-18" x2="30" y2="-38" stroke="rgba(232,135,42,.4)" stroke-width="1" stroke-dasharray="3,2"/>
-      </g>
-
-      <!-- BALÃO DE DETALHES do pin ativo -->
-      <!-- sombra do balão -->
-      <rect x="334" y="55" width="210" height="108" rx="10" fill="rgba(0,0,0,.5)"/>
-      <!-- balão -->
-      <rect x="332" y="53" width="210" height="108" rx="10" fill="rgba(16,9,3,.97)" stroke="rgba(232,135,42,.45)" stroke-width="1.2"/>
-      <!-- header âmbar -->
-      <rect x="332" y="53" width="210" height="30" rx="10" fill="#241608"/>
-      <rect x="332" y="68" width="210" height="15" fill="#241608"/>
-      <!-- X de fechar -->
-      <text x="528" y="72" text-anchor="middle" font-size="11" fill="rgba(244,235,216,.4)">✕</text>
-      <!-- título do evento -->
-      <text x="346" y="71" font-size="11" font-weight="bold" fill="#F4EBD8" font-family="sans-serif">Roda de Samba do Léo</text>
-      <!-- tag -->
-      <rect x="346" y="88" width="38" height="14" rx="4" fill="#E8872A"/>
-      <text x="365" y="98" text-anchor="middle" font-size="9" font-weight="bold" fill="#0D0A07" font-family="sans-serif">pagode</text>
-      <rect x="389" y="88" width="28" height="14" rx="4" fill="#B86020"/>
-      <text x="403" y="98" text-anchor="middle" font-size="9" font-weight="bold" fill="#F4EBD8" font-family="sans-serif">raiz</text>
-      <!-- divisor -->
-      <line x1="346" y1="108" x2="528" y2="108" stroke="rgba(232,135,42,.15)" stroke-width="1"/>
-      <!-- meta -->
-      <text x="346" y="122" font-size="9.5" fill="rgba(244,235,216,.5)" font-family="sans-serif">🏠</text>
-      <text x="360" y="122" font-size="9.5" fill="rgba(244,235,216,.8)" font-family="sans-serif">Bar do Léo · Centro</text>
-      <text x="346" y="135" font-size="9.5" fill="rgba(244,235,216,.5)" font-family="sans-serif">📅</text>
-      <text x="360" y="135" font-size="9.5" fill="rgba(244,235,216,.8)" font-family="sans-serif">Sábado, 21 jun · 21h</text>
-      <text x="346" y="148" font-size="9.5" fill="rgba(244,235,216,.5)" font-family="sans-serif">🎟</text>
-      <text x="360" y="148" font-size="9.5" fill="rgba(244,235,216,.8)" font-family="sans-serif">R$ 15,00</text>
-      <!-- seta do balão apontando pro pin -->
-      <polygon points="340,120 332,130 332,110" fill="rgba(16,9,3,.97)" stroke="rgba(232,135,42,.45)" stroke-width="1.2"/>
-      <line x1="332" y1="110" x2="332" y2="130" stroke="rgba(16,9,3,.97)" stroke-width="2"/>
-
-      <!-- controles de zoom -->
-      <rect x="786" y="260" width="28" height="56" rx="7" fill="rgba(13,10,7,.9)" stroke="rgba(232,135,42,.3)" stroke-width="1"/>
-      <text x="800" y="282" text-anchor="middle" font-size="14" fill="#E8872A" font-family="sans-serif">+</text>
-      <line x1="789" y1="288" x2="811" y2="288" stroke="rgba(232,135,42,.2)" stroke-width="1"/>
-      <text x="800" y="306" text-anchor="middle" font-size="14" fill="#E8872A" font-family="sans-serif">−</text>
-
-      <!-- atribuição -->
-      <text x="810" y="355" text-anchor="end" font-size="8" fill="rgba(244,235,216,.15)" font-family="sans-serif">© OpenStreetMap</text>
-    </svg>
   </div>
-
 </section>
+
+<!-- DUAS FORMAS DE USAR -->
+<section style="padding:60px 20px;position:relative;z-index:1;background:rgba(26,13,5,.5);">
+  <div style="max-width:880px;margin:0 auto;text-align:center;">
+    <p style="font-size:11px;font-weight:700;color:var(--a);letter-spacing:.1em;text-transform:uppercase;margin-bottom:12px;">Duas formas de usar</p>
+    <h2 style="font-size:clamp(24px,4vw,38px);font-weight:700;margin-bottom:40px;">Do <em style="color:#25D366;font-style:normal;">seu</em> jeito</h2>
+    <div style="display:grid;grid-template-columns:1fr auto 1fr;gap:0;align-items:stretch;max-width:720px;margin:0 auto;">
+      <!-- Card WhatsApp -->
+      <div style="background:rgba(37,211,102,.06);border:1px solid rgba(37,211,102,.25);border-radius:16px 0 0 16px;padding:28px 24px;text-align:left;">
+        <div style="font-size:32px;margin-bottom:12px;">💬</div>
+        <div style="font-size:11px;font-weight:700;color:#25D366;letter-spacing:.08em;text-transform:uppercase;margin-bottom:6px;">Principal</div>
+        <h3 style="font-size:16px;font-weight:700;color:var(--cream);margin-bottom:8px;">Assistente<br/>no WhatsApp</h3>
+        <p style="font-size:12px;color:var(--muted);line-height:1.6;margin-bottom:14px;">Pergunte do jeito que quiser. O assistente entende e responde com eventos, horários e locais em segundos.</p>
+        <div style="display:flex;flex-direction:column;gap:5px;">
+          <span style="font-size:11px;color:rgba(37,211,102,.8);display:flex;align-items:center;gap:5px;"><span style="color:#25D366;">✓</span> Sem app extra</span>
+          <span style="font-size:11px;color:rgba(37,211,102,.8);display:flex;align-items:center;gap:5px;"><span style="color:#25D366;">✓</span> Linguagem natural</span>
+          <span style="font-size:11px;color:rgba(37,211,102,.8);display:flex;align-items:center;gap:5px;"><span style="color:#25D366;">✓</span> Resposta em segundos</span>
+        </div>
+      </div>
+      <!-- Divisor -->
+      <div style="display:flex;align-items:center;justify-content:center;padding:0 16px;position:relative;">
+        <div style="width:1px;height:100%;background:linear-gradient(transparent,rgba(232,135,42,.3),transparent);position:absolute;"></div>
+        <div style="background:rgba(26,13,5,.9);border:1px solid rgba(232,135,42,.3);border-radius:50%;width:36px;height:36px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:var(--a);z-index:1;flex-shrink:0;">ou</div>
+      </div>
+      <!-- Card Mapa -->
+      <div style="background:rgba(232,135,42,.05);border:1px solid rgba(232,135,42,.2);border-radius:0 16px 16px 0;padding:28px 24px;text-align:left;">
+        <div style="font-size:32px;margin-bottom:12px;">🗺️</div>
+        <div style="font-size:11px;font-weight:700;color:var(--a);letter-spacing:.08em;text-transform:uppercase;margin-bottom:6px;">Secundário</div>
+        <h3 style="font-size:16px;font-weight:700;color:var(--cream);margin-bottom:8px;">Mapa<br/>interativo</h3>
+        <p style="font-size:12px;color:var(--muted);line-height:1.6;margin-bottom:14px;">Explore os pins no mapa, filtre por dia ou estilo e veja todos os eventos da sua cidade de uma vez.</p>
+        <div style="display:flex;flex-direction:column;gap:5px;">
+          <span style="font-size:11px;color:rgba(232,135,42,.8);display:flex;align-items:center;gap:5px;"><span style="color:var(--a);">✓</span> Visão geográfica</span>
+          <span style="font-size:11px;color:rgba(232,135,42,.8);display:flex;align-items:center;gap:5px;"><span style="color:var(--a);">✓</span> Filtros por estilo</span>
+          <span style="font-size:11px;color:rgba(232,135,42,.8);display:flex;align-items:center;gap:5px;"><span style="color:var(--a);">✓</span> Detalhes do evento</span>
+        </div>
+      </div>
+    </div>
+    <!-- Mobile: empilhado -->
+    <style>
+      @media(max-width:600px){
+        #dual-grid{grid-template-columns:1fr!important;}
+        #dual-div{display:none!important;}
+        #card-wa{border-radius:16px!important;margin-bottom:12px;}
+        #card-map{border-radius:16px!important;}
+      }
+    </style>
+  </div>
+</section>
+
 
 <!-- COMO FUNCIONA -->
 <section id="como">
   <div class="sec-inner">
     <div class="sec-label">Como funciona</div>
-    <h2>Simples como uma <em>roda de samba</em></h2>
-    <p class="sec-sub">Sem cadastro complicado. Abriu, viu o mapa, foi sambar.</p>
+    <h2>Use como preferir —<br/><em class="g">WhatsApp</em> ou <em>mapa</em></h2>
+    <p class="sec-sub">Sem app, sem cadastro. Só o WhatsApp que você já tem.</p>
     <div class="steps">
-      <div class="step"><div class="step-n">01</div><span class="step-icon">🗺️</span><h3>Abra o mapa</h3><p>O mapa carrega automaticamente os eventos de samba na sua região. Zero burocracia.</p></div>
-      <div class="step"><div class="step-n">02</div><span class="step-icon">📍</span><h3>Explore os pins</h3><p>Cada pin é um evento real. Clique para ver local, horário, estilo e ingresso.</p></div>
-      <div class="step"><div class="step-n">03</div><span class="step-icon">🎵</span><h3>Filtre e encontre</h3><p>Hoje? Fim de semana? Use os filtros e ache o samba certo para você.</p></div>
-      <div class="step"><div class="step-n">04</div><span class="step-icon">🥁</span><h3>Vá sambar</h3><p>Compartilhe com os amigos e vai. O samba não espera.</p></div>
+      <div class="step wa-step">
+        <div class="step-n">01</div>
+        <span class="step-icon">💬</span>
+        <h3>Mande sua pergunta</h3>
+        <p>Pergunte no WhatsApp: "Onde tem samba hoje?", "Tem pagode grátis esse fim de semana?" ou qualquer dúvida sobre eventos.</p>
+      </div>
+      <div class="step wa-step">
+        <div class="step-n">02</div>
+        <span class="step-icon">🤖</span>
+        <h3>O assistente responde</h3>
+        <p>Em segundos, você recebe uma lista com nome do evento, local, horário e valor da entrada — tudo direto no chat.</p>
+      </div>
+      <div class="step wa-step">
+        <div class="step-n">03</div>
+        <span class="step-icon">📍</span>
+        <h3>Prefere o mapa?</h3>
+        <p>Acesse o mapa interativo e explore todos os eventos com pins, filtros por dia, estilo e muito mais.</p>
+      </div>
+      <div class="step">
+        <div class="step-n">04</div>
+        <span class="step-icon">🥁</span>
+        <h3>Vai sambar</h3>
+        <p>Compartilhe com os amigos pelo próprio WhatsApp e vai. O samba não espera.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- EXEMPLOS -->
+<section id="exemplos">
+  <div class="sec-inner" style="text-align:center;">
+    <div class="sec-label">Exemplos de perguntas</div>
+    <h2>Pergunte do seu <em>jeito</em></h2>
+    <p class="sec-sub" style="margin:0 auto;">O assistente entende linguagem natural. Pergunte como quiser.</p>
+    <div class="questions-grid">
+      <div class="q-card"><div class="q-icon">🌅</div><div class="q-text"><strong>"Onde tem samba hoje?"</strong></div></div>
+      <div class="q-card"><div class="q-icon">📍</div><div class="q-text"><strong>"Onde tem pagode em Porto Feliz?"</strong></div></div>
+      <div class="q-card"><div class="q-icon">🕔</div><div class="q-text"><strong>"Qual samba começa antes das 18h?"</strong></div></div>
+      <div class="q-card"><div class="q-icon">🆓</div><div class="q-text"><strong>"Tem roda de samba gratuita neste domingo?"</strong></div></div>
+      <div class="q-card"><div class="q-icon">🎸</div><div class="q-text"><strong>"Quero samba de raiz, tem hoje?"</strong></div></div>
+      <div class="q-card"><div class="q-icon">🗓️</div><div class="q-text"><strong>"Qual o próximo evento no Bar do Léo?"</strong></div></div>
+      <div class="q-card"><div class="q-icon">👨‍👩‍👧</div><div class="q-text"><strong>"Tem samba família neste fim de semana?"</strong></div></div>
+      <div class="q-card"><div class="q-icon">🎺</div><div class="q-text"><strong>"Onde tem partido alto essa semana?"</strong></div></div>
     </div>
   </div>
 </section>
@@ -419,9 +396,9 @@ footer p{font-size:11px;color:var(--muted);}
     <div class="sec-label">Para quem é</div>
     <h2>Todo mundo que <em>ama samba</em></h2>
     <div class="cards">
-      <div class="card"><div class="card-icon">🎶</div><h3>Quem curte samba</h3><p>Não perde mais aquela roda porque não sabia que tinha. O mapa mostra tudo que está acontecendo perto de você.</p></div>
-      <div class="card"><div class="card-icon">🏠</div><h3>Bares e espaços</h3><p>Cadastre seus eventos e apareça no mapa para quem busca samba na sua região. Grátis para começar.</p></div>
-      <div class="card"><div class="card-icon">✈️</div><h3>Turistas e visitantes</h3><p>Chegou numa cidade nova? Abra o mapa e ache a roda mais próxima em segundos.</p></div>
+      <div class="card"><div class="card-icon">🎶</div><h3>Quem curte samba</h3><p>Nunca mais perde uma roda por não saber que tinha. Um zap e você já sabe tudo que rola hoje.</p></div>
+      <div class="card"><div class="card-icon">🏠</div><h3>Bares e espaços</h3><p>Cadastre seus eventos e apareça nas respostas do assistente para quem busca samba na sua cidade.</p></div>
+      <div class="card"><div class="card-icon">✈️</div><h3>Turistas</h3><p>Chegou numa cidade nova? Um zap resolve: "Onde tem samba hoje aqui perto?"</p></div>
     </div>
   </div>
 </section>
@@ -430,10 +407,9 @@ footer p{font-size:11px;color:var(--muted);}
 <section id="captura">
   <div class="sec-inner">
     <div class="cap-box">
-      <div class="sec-label" style="text-align:center;">Lista de espera</div>
+      <div class="sec-label" style="text-align:center;color:#25D366;">Lista de espera</div>
       <h2 style="text-align:center;">Seja um dos <em>primeiros</em></h2>
       <p class="sec-sub" style="margin:0 auto 24px;text-align:center;">Estamos chegando. Entre na lista e ganhe acesso antecipado quando lançarmos na sua cidade.</p>
-
       <div id="cap-form">
         <div class="cap-field"><label>Seu nome</label>
           <input class="cap-input" id="cap-nome" type="text" placeholder="Como você se chama?"/></div>
@@ -441,14 +417,16 @@ footer p{font-size:11px;color:var(--muted);}
           <input class="cap-input" id="cap-wa" type="tel" placeholder="(11) 9 0000-0000"/></div>
         <div class="cap-field"><label>Cidade</label>
           <input class="cap-input" id="cap-cidade" type="text" placeholder="Sua cidade"/></div>
-        <button class="cap-btn" id="cap-btn" onclick="submitForm()">Garantir meu acesso antecipado</button>
+        <button class="cap-btn" id="cap-btn" onclick="submitForm()">
+          <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>
+          Me coloque na lista de espera
+        </button>
         <div id="cap-err">Preencha todos os campos.</div>
       </div>
-
       <div id="cap-ok">
         <div class="ok-icon">🎵</div>
         <p>Você está na lista!</p>
-        <small>Te avisamos quando o samba chegar na sua cidade.</small>
+        <small>Te avisamos pelo WhatsApp quando lançarmos na sua cidade.</small>
       </div>
       <p class="cap-hint">Sem spam. Só samba.</p>
     </div>
@@ -467,46 +445,33 @@ footer p{font-size:11px;color:var(--muted);}
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <script>
+
 // ── CREDENCIAIS SUPABASE ──────────────────────────────────
 const SB_URL  = 'https://cwdjdvsdswpisqidcayn.supabase.co'; // ← Project URL
 const SB_KEY  = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN3ZGpkdnNkc3dwaXNxaWRjYXluIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODEzMDI0ODEsImV4cCI6MjA5Njg3ODQ4MX0.yl_yleFrsNgQhOrN15op8EfK4LtfQ3UNHNH1-uh5svU';                  // ← anon public key
 // ─────────────────────────────────────────────────────────
 
-// ── SUPABASE — lista de espera ──
-async function submitForm() {
+  async function submitForm(){
   const nome   = document.getElementById('cap-nome').value.trim();
   const wa     = document.getElementById('cap-wa').value.trim();
   const cidade = document.getElementById('cap-cidade').value.trim();
   const errEl  = document.getElementById('cap-err');
   const btn    = document.getElementById('cap-btn');
-
   errEl.style.display = 'none';
-  if (!nome || !wa || !cidade) { errEl.style.display = 'block'; return; }
-
-  btn.disabled    = true;
-  btn.textContent = 'Enviando...';
-
-  const isConfigured = SB_URL !== 'https://SEU_PROJECT_ID.supabase.co' && SB_KEY !== 'SUA_ANON_KEY_AQUI';
-
-  if (isConfigured) {
-    try {
-      const sb = window.supabase.createClient(SB_URL, SB_KEY);
-      const { error } = await sb.from('lista_espera').insert({ nome, whatsapp: wa, cidade });
-      if (error) throw error;
-    } catch(e) {
-      console.warn('Supabase erro:', e.message);
-      // Mesmo com erro, mostra sucesso (não perde o lead por falha técnica)
-    }
+  if(!nome||!wa||!cidade){errEl.style.display='block';return;}
+  btn.disabled=true;btn.textContent='Enviando...';
+  const ok=SB_URL.includes('supabase.co')&&!SB_URL.includes('SEU_PROJECT');
+  if(ok){
+    try{
+      const sb=window.supabase.createClient(SB_URL,SB_KEY);
+      await sb.from('lista_espera').insert({nome,whatsapp:wa,cidade});
+    }catch(e){console.warn(e);}
   }
-
-  document.getElementById('cap-form').style.display = 'none';
-  document.getElementById('cap-ok').style.display   = 'block';
+  document.getElementById('cap-form').style.display='none';
+  document.getElementById('cap-ok').style.display='block';
 }
-
-['cap-nome','cap-wa','cap-cidade'].forEach(id => {
-  document.getElementById(id).addEventListener('keydown', e => {
-    if (e.key === 'Enter') submitForm();
-  });
+['cap-nome','cap-wa','cap-cidade'].forEach(id=>{
+  document.getElementById(id).addEventListener('keydown',e=>{if(e.key==='Enter')submitForm();});
 });
 </script>
 </body>
