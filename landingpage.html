@@ -112,9 +112,9 @@ h1 em{color:var(--a);font-style:normal;text-shadow:0 0 40px rgba(232,135,42,.3);
 /* animação das mensagens */
 .wa-msg{opacity:0;transform:translateY(10px);animation:msgIn .4s forwards;}
 .wa-msg:nth-child(1){animation-delay:.3s;}
-.wa-msg:nth-child(2){animation-delay:1s;}
-.wa-msg:nth-child(3){animation-delay:2s;}
-.wa-msg:nth-child(4){animation-delay:3.2s;}
+.wa-msg:nth-child(2){animation-delay:1.2s;}
+.wa-msg:nth-child(3){animation-delay:2.8s;}
+.wa-msg:nth-child(4){animation-delay:3.8s;}
 @keyframes msgIn{to{opacity:1;transform:translateY(0);}}
 
 /* SEÇÕES */
@@ -231,7 +231,7 @@ footer p{font-size:11px;color:var(--muted);}
         <!-- header -->
         <div class="wa-header">
           <div class="wa-back">‹</div>
-          <div class="wa-avatar">🥁</div>
+          <div class="wa-avatar">🎵</div>
           <div class="wa-info">
             <div class="wa-name">Onde Tem Samba</div>
             <div class="wa-status">online</div>
@@ -239,19 +239,13 @@ footer p{font-size:11px;color:var(--muted);}
         </div>
         <!-- chat -->
         <div class="wa-chat">
-          <!-- usuário pergunta -->
           <div class="wa-msg user">
-            <div class="wa-bubble">Onde tem samba hoje em Porto Feliz? 🎵</div>
+            <div class="wa-bubble">Onde tem samba hoje em Porto Feliz? 🎶</div>
             <div class="wa-time">19:32 <span class="wa-check">✓✓</span></div>
           </div>
-          <!-- bot digitando -->
-          <div class="wa-msg bot" style="animation-delay:.8s">
-            <div class="wa-typing"><div class="wa-dot"></div><div class="wa-dot"></div><div class="wa-dot"></div></div>
-          </div>
-          <!-- bot responde -->
           <div class="wa-msg bot">
             <div class="wa-result">
-              <div class="wa-result-title">🥁 3 sambas hoje em Porto Feliz</div>
+              <div class="wa-result-title">🎶 3 sambas hoje em Porto Feliz</div>
               <div class="wa-result-item">
                 <div class="wa-result-icon">📍</div>
                 <div class="wa-result-info">
@@ -276,10 +270,12 @@ footer p{font-size:11px;color:var(--muted);}
             </div>
             <div class="wa-time" style="background:#fff;padding:0 8px 6px;border-radius:0 0 8px 8px;margin-top:-2px;">19:32</div>
           </div>
-          <!-- seguimento -->
           <div class="wa-msg user">
             <div class="wa-bubble">Qual começa mais cedo? 🕐</div>
             <div class="wa-time">19:33 <span class="wa-check">✓✓</span></div>
+          </div>
+          <div class="wa-msg bot">
+            <div class="wa-typing"><div class="wa-dot"></div><div class="wa-dot"></div><div class="wa-dot"></div></div>
           </div>
         </div>
       </div>
@@ -292,9 +288,9 @@ footer p{font-size:11px;color:var(--muted);}
   <div style="max-width:880px;margin:0 auto;text-align:center;">
     <p style="font-size:11px;font-weight:700;color:var(--a);letter-spacing:.1em;text-transform:uppercase;margin-bottom:12px;">Duas formas de usar</p>
     <h2 style="font-size:clamp(24px,4vw,38px);font-weight:700;margin-bottom:40px;">Do <em style="color:#25D366;font-style:normal;">seu</em> jeito</h2>
-    <div style="display:grid;grid-template-columns:1fr auto 1fr;gap:0;align-items:stretch;max-width:720px;margin:0 auto;">
+    <div id="dual-grid" style="display:grid;grid-template-columns:1fr auto 1fr;gap:0;align-items:stretch;max-width:720px;margin:0 auto;">
       <!-- Card WhatsApp -->
-      <div style="background:rgba(37,211,102,.06);border:1px solid rgba(37,211,102,.25);border-radius:16px 0 0 16px;padding:28px 24px;text-align:left;">
+      <div id="card-wa" style="background:rgba(37,211,102,.06);border:1px solid rgba(37,211,102,.25);border-radius:16px 0 0 16px;padding:28px 24px;text-align:left;">
         <div style="font-size:32px;margin-bottom:12px;">💬</div>
         <div style="font-size:11px;font-weight:700;color:#25D366;letter-spacing:.08em;text-transform:uppercase;margin-bottom:6px;">Principal</div>
         <h3 style="font-size:16px;font-weight:700;color:var(--cream);margin-bottom:8px;">Assistente<br/>no WhatsApp</h3>
@@ -306,12 +302,12 @@ footer p{font-size:11px;color:var(--muted);}
         </div>
       </div>
       <!-- Divisor -->
-      <div style="display:flex;align-items:center;justify-content:center;padding:0 16px;position:relative;">
+      <div id="dual-div" style="display:flex;align-items:center;justify-content:center;padding:0 16px;position:relative;">
         <div style="width:1px;height:100%;background:linear-gradient(transparent,rgba(232,135,42,.3),transparent);position:absolute;"></div>
         <div style="background:rgba(26,13,5,.9);border:1px solid rgba(232,135,42,.3);border-radius:50%;width:36px;height:36px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:var(--a);z-index:1;flex-shrink:0;">ou</div>
       </div>
       <!-- Card Mapa -->
-      <div style="background:rgba(232,135,42,.05);border:1px solid rgba(232,135,42,.2);border-radius:0 16px 16px 0;padding:28px 24px;text-align:left;">
+      <div id="card-map" style="background:rgba(232,135,42,.05);border:1px solid rgba(232,135,42,.2);border-radius:0 16px 16px 0;padding:28px 24px;text-align:left;">
         <div style="font-size:32px;margin-bottom:12px;">🗺️</div>
         <div style="font-size:11px;font-weight:700;color:var(--a);letter-spacing:.08em;text-transform:uppercase;margin-bottom:6px;">Secundário</div>
         <h3 style="font-size:16px;font-weight:700;color:var(--cream);margin-bottom:8px;">Mapa<br/>interativo</h3>
@@ -325,8 +321,8 @@ footer p{font-size:11px;color:var(--muted);}
     </div>
     <!-- Mobile: empilhado -->
     <style>
-      @media(max-width:600px){
-        #dual-grid{grid-template-columns:1fr!important;}
+      @media(max-width:640px){
+        #dual-grid{grid-template-columns:1fr!important;max-width:100%!important;}
         #dual-div{display:none!important;}
         #card-wa{border-radius:16px!important;margin-bottom:12px;}
         #card-map{border-radius:16px!important;}
@@ -363,7 +359,7 @@ footer p{font-size:11px;color:var(--muted);}
       </div>
       <div class="step">
         <div class="step-n">04</div>
-        <span class="step-icon">🥁</span>
+        <span class="step-icon">🎶</span>
         <h3>Vai sambar</h3>
         <p>Compartilhe com os amigos pelo próprio WhatsApp e vai. O samba não espera.</p>
       </div>
@@ -446,12 +442,13 @@ footer p{font-size:11px;color:var(--muted);}
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <script>
 
-// ── CREDENCIAIS SUPABASE ──────────────────────────────────
+  // ── CREDENCIAIS SUPABASE ──────────────────────────────────
 const SB_URL  = 'https://cwdjdvsdswpisqidcayn.supabase.co'; // ← Project URL
 const SB_KEY  = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN3ZGpkdnNkc3dwaXNxaWRjYXluIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODEzMDI0ODEsImV4cCI6MjA5Njg3ODQ4MX0.yl_yleFrsNgQhOrN15op8EfK4LtfQ3UNHNH1-uh5svU';                  // ← anon public key
 // ─────────────────────────────────────────────────────────
 
-  async function submitForm(){
+
+async function submitForm(){
   const nome   = document.getElementById('cap-nome').value.trim();
   const wa     = document.getElementById('cap-wa').value.trim();
   const cidade = document.getElementById('cap-cidade').value.trim();
