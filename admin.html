@@ -21,7 +21,7 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
 input,select,textarea,button{font-family:'Space Grotesk',sans-serif;-webkit-appearance:none;}
 
 /* ─── LAYOUT ─── */
-#app{display:flex;height:100vh;}
+#app{display:flex;height:100vh;position:relative;z-index:0;isolation:auto;}
 
 /* ─── SIDEBAR (desktop) ─── */
 #sb{width:210px;background:var(--surface);border-right:1px solid var(--border);
@@ -162,23 +162,8 @@ nav{flex:1;padding:4px 0;}
 .chart-pad{padding-bottom:24px;padding-top:20px;padding-left:14px;padding-right:14px;}
 
 /* ─── MODAL ─── */
-.mo{
-  position:fixed !important;
-  top:0 !important;
-  left:0 !important;
-  right:0 !important;
-  bottom:0 !important;
-  display:none;
-  align-items:flex-end;
-  justify-content:center;
-  background:rgba(0,0,0,.65);
-  z-index:2147483647 !important;
-  isolation:isolate;
-}
-
-.mo.open{
-  display:flex !important;
-}
+.mo{position:fixed;inset:0;z-index:2147483647;background:rgba(0,0,0,.65);display:none;align-items:flex-end;justify-content:center;}
+.mo.open{display:flex;}
 .modal{background:var(--card);border:1px solid var(--border);border-radius:20px 20px 0 0;width:100%;max-width:560px;max-height:92vh;overflow-y:auto;-webkit-overflow-scrolling:touch;padding-bottom:env(safe-area-inset-bottom,16px);}
 .modal-handle{display:flex;justify-content:center;padding:10px 0 4px;}
 .modal-handle::before{content:'';width:36px;height:3px;background:rgba(232,135,42,.25);border-radius:2px;}
@@ -216,16 +201,6 @@ nav{flex:1;padding:4px 0;}
 .empty-icon{font-size:32px;margin-bottom:8px;}
 </style>
 </head>
-
-<script>
-document.addEventListener('DOMContentLoaded', () => {
-  ['mo-ev', 'mo-org', 'mo-del'].forEach(id => {
-    const modal = document.getElementById(id);
-    if (modal) document.body.appendChild(modal);
-  });
-});
-</script>
-  
 <body>
 
 <!-- LOGIN -->
@@ -358,6 +333,101 @@ document.addEventListener('DOMContentLoaded', () => {
 
     </div>
   </div>
+
+
+<!-- ══ MODAL EVENTO ══ -->
+<div class="mo" id="mo-ev">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <div class="mh"><h2 id="mev-t">Novo evento</h2><button class="mc-x" onclick="cMod('mo-ev')">✕</button></div>
+    <div class="mb">
+      <input type="hidden" id="ev-id"/>
+      <div class="mf"><label>Nome *</label><input type="text" id="ev-nome" placeholder="Ex: Pagode toda quinta"/></div>
+      <div class="mfr">
+        <div class="mf"><label>Data *</label><input type="date" id="ev-data"/></div>
+        <div class="mf"><label>Status</label>
+          <select id="ev-status"><option value="publicado">Publicado</option><option value="rascunho">Rascunho</option><option value="encerrado">Encerrado</option></select>
+        </div>
+      </div>
+      <div class="mfr">
+        <div class="mf"><label>Início</label><input type="time" id="ev-ini" value="20:00"/></div>
+        <div class="mf"><label>Recorrência</label>
+          <select id="ev-rec"><option value="unico">Único</option><option value="semanal">Semanal</option><option value="quinzenal">Quinzenal</option><option value="mensal">Mensal</option></select>
+        </div>
+      </div>
+      <div class="mfr">
+        <div class="mf"><label>Ingresso</label>
+          <select id="ev-ing" onchange="tP()"><option value="gratuito">Gratuito</option><option value="pago">Pago</option><option value="chapeu">Chapéu</option></select>
+        </div>
+        <div class="mf" id="fp" style="display:none;"><label>Valor R$</label><input type="number" id="ev-preco" placeholder="0"/></div>
+      </div>
+      <div class="mf"><label>Organizador</label><select id="ev-org"><option value="">Selecione...</option></select></div>
+      <div class="mfr">
+        <div class="mf"><label>Latitude</label><input type="number" step="any" id="ev-lat" placeholder="-23.2155"/></div>
+        <div class="mf"><label>Longitude</label><input type="number" step="any" id="ev-lng" placeholder="-47.5270"/></div>
+      </div>
+      <div class="mf"><label>URL da imagem</label><input type="url" id="ev-img" placeholder="https://..."/></div>
+      <div class="mf"><label>Descrição</label><textarea id="ev-desc" placeholder="Descreva o evento..."></textarea></div>
+    </div>
+    <div class="mft">
+      <button class="btn btn-g" onclick="cMod('mo-ev')">Cancelar</button>
+      <button class="btn btn-p" onclick="sEv()">Salvar</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ MODAL ORG ══ -->
+<div class="mo" id="mo-org">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <div class="mh"><h2 id="morg-t">Novo organizador</h2><button class="mc-x" onclick="cMod('mo-org')">✕</button></div>
+    <div class="mb">
+      <input type="hidden" id="org-id"/>
+      <div class="mfr">
+        <div class="mf"><label>Nome *</label><input type="text" id="org-nome" placeholder="Bar do Léo"/></div>
+        <div class="mf"><label>Plano</label><select id="org-plano"><option value="gratis">Grátis</option><option value="pro">Pro</option></select></div>
+      </div>
+      <div class="mf"><label>Endereço</label><input type="text" id="org-end" placeholder="Rua, número, bairro"/></div>
+      <div class="mfr">
+        <div class="mf"><label>Cidade</label><input type="text" id="org-city" value="Porto Feliz"/></div>
+        <div class="mf"><label>Estado</label><select id="org-uf"><option>SP</option><option>RJ</option><option>MG</option><option>RS</option><option>BA</option></select></div>
+      </div>
+      <div class="mfr">
+        <div class="mf"><label>Latitude</label><input type="number" step="any" id="org-lat"/></div>
+        <div class="mf"><label>Longitude</label><input type="number" step="any" id="org-lng"/></div>
+      </div>
+      <div class="mfr">
+        <div class="mf"><label>Instagram</label><input type="text" id="org-ig" placeholder="@bardoleo"/></div>
+        <div class="mf"><label>E-mail</label><input type="email" id="org-mail"/></div>
+      </div>
+      <div class="mfr">
+        <div class="mf"><label>Status</label><select id="org-ativo"><option value="true">Ativo</option><option value="false">Inativo</option></select></div>
+        <div class="mf"><label>URL foto/logo</label><input type="url" id="org-foto" placeholder="https://..."/></div>
+      </div>
+      <div class="mf"><label>Sobre o espaço</label><textarea id="org-desc"></textarea></div>
+    </div>
+    <div class="mft">
+      <button class="btn btn-g" onclick="cMod('mo-org')">Cancelar</button>
+      <button class="btn btn-p" onclick="sOrg()">Salvar</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ CONFIRM DELETE ══ -->
+<div class="mo" id="mo-del">
+  <div class="modal" style="max-width:400px;">
+    <div class="modal-handle"></div>
+    <div class="mh"><h2>Confirmar exclusão</h2><button class="mc-x" onclick="cMod('mo-del')">✕</button></div>
+    <div class="mb"><p style="font-size:13px;color:var(--muted);line-height:1.6;" id="del-msg"></p></div>
+    <div class="mft">
+      <button class="btn btn-g" onclick="cMod('mo-del')">Cancelar</button>
+      <button style="padding:10px 18px;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;background:transparent;color:var(--err);border:1px solid rgba(229,57,53,.3);font-family:'Space Grotesk',sans-serif;" id="del-ok">Excluir</button>
+    </div>
+  </div>
+</div>
+
+<div id="toast"></div>
+
 </div>
 
 
@@ -540,22 +610,11 @@ function toast(msg,ok=true){const t=document.getElementById('toast');t.textConte
 
 // ── MODALs ──
 function oMod(id){
-  const el = document.getElementById(id);
-
-  if(!el){
-    console.error('Modal não encontrado:', id);
-    return;
-  }
-
+  var el = document.getElementById(id);
+  if(!el){ console.error('Modal não encontrado:', id); return; }
   el.classList.add('open');
-
-  console.log({
-    modal: id,
-    zIndex: getComputedStyle(el).zIndex,
-    display: getComputedStyle(el).display
-  });
+  console.log('Modal aberto:', id, el.classList);
 }
-
 function cMod(id){
   var el = document.getElementById(id);
   if(el) el.classList.remove('open');
@@ -675,98 +734,6 @@ document.addEventListener('DOMContentLoaded', function() {
   });
 });
 </script>
-<!-- ══ MODAL EVENTO ══ -->
-<div class="mo" id="mo-ev">
-  <div class="modal">
-    <div class="modal-handle"></div>
-    <div class="mh"><h2 id="mev-t">Novo evento</h2><button class="mc-x" onclick="cMod('mo-ev')">✕</button></div>
-    <div class="mb">
-      <input type="hidden" id="ev-id"/>
-      <div class="mf"><label>Nome *</label><input type="text" id="ev-nome" placeholder="Ex: Pagode toda quinta"/></div>
-      <div class="mfr">
-        <div class="mf"><label>Data *</label><input type="date" id="ev-data"/></div>
-        <div class="mf"><label>Status</label>
-          <select id="ev-status"><option value="publicado">Publicado</option><option value="rascunho">Rascunho</option><option value="encerrado">Encerrado</option></select>
-        </div>
-      </div>
-      <div class="mfr">
-        <div class="mf"><label>Início</label><input type="time" id="ev-ini" value="20:00"/></div>
-        <div class="mf"><label>Recorrência</label>
-          <select id="ev-rec"><option value="unico">Único</option><option value="semanal">Semanal</option><option value="quinzenal">Quinzenal</option><option value="mensal">Mensal</option></select>
-        </div>
-      </div>
-      <div class="mfr">
-        <div class="mf"><label>Ingresso</label>
-          <select id="ev-ing" onchange="tP()"><option value="gratuito">Gratuito</option><option value="pago">Pago</option><option value="chapeu">Chapéu</option></select>
-        </div>
-        <div class="mf" id="fp" style="display:none;"><label>Valor R$</label><input type="number" id="ev-preco" placeholder="0"/></div>
-      </div>
-      <div class="mf"><label>Organizador</label><select id="ev-org"><option value="">Selecione...</option></select></div>
-      <div class="mfr">
-        <div class="mf"><label>Latitude</label><input type="number" step="any" id="ev-lat" placeholder="-23.2155"/></div>
-        <div class="mf"><label>Longitude</label><input type="number" step="any" id="ev-lng" placeholder="-47.5270"/></div>
-      </div>
-      <div class="mf"><label>URL da imagem</label><input type="url" id="ev-img" placeholder="https://..."/></div>
-      <div class="mf"><label>Descrição</label><textarea id="ev-desc" placeholder="Descreva o evento..."></textarea></div>
-    </div>
-    <div class="mft">
-      <button class="btn btn-g" onclick="cMod('mo-ev')">Cancelar</button>
-      <button class="btn btn-p" onclick="sEv()">Salvar</button>
-    </div>
-  </div>
-</div>
-
-<!-- ══ MODAL ORG ══ -->
-<div class="mo" id="mo-org">
-  <div class="modal">
-    <div class="modal-handle"></div>
-    <div class="mh"><h2 id="morg-t">Novo organizador</h2><button class="mc-x" onclick="cMod('mo-org')">✕</button></div>
-    <div class="mb">
-      <input type="hidden" id="org-id"/>
-      <div class="mfr">
-        <div class="mf"><label>Nome *</label><input type="text" id="org-nome" placeholder="Bar do Léo"/></div>
-        <div class="mf"><label>Plano</label><select id="org-plano"><option value="gratis">Grátis</option><option value="pro">Pro</option></select></div>
-      </div>
-      <div class="mf"><label>Endereço</label><input type="text" id="org-end" placeholder="Rua, número, bairro"/></div>
-      <div class="mfr">
-        <div class="mf"><label>Cidade</label><input type="text" id="org-city" value="Porto Feliz"/></div>
-        <div class="mf"><label>Estado</label><select id="org-uf"><option>SP</option><option>RJ</option><option>MG</option><option>RS</option><option>BA</option></select></div>
-      </div>
-      <div class="mfr">
-        <div class="mf"><label>Latitude</label><input type="number" step="any" id="org-lat"/></div>
-        <div class="mf"><label>Longitude</label><input type="number" step="any" id="org-lng"/></div>
-      </div>
-      <div class="mfr">
-        <div class="mf"><label>Instagram</label><input type="text" id="org-ig" placeholder="@bardoleo"/></div>
-        <div class="mf"><label>E-mail</label><input type="email" id="org-mail"/></div>
-      </div>
-      <div class="mfr">
-        <div class="mf"><label>Status</label><select id="org-ativo"><option value="true">Ativo</option><option value="false">Inativo</option></select></div>
-        <div class="mf"><label>URL foto/logo</label><input type="url" id="org-foto" placeholder="https://..."/></div>
-      </div>
-      <div class="mf"><label>Sobre o espaço</label><textarea id="org-desc"></textarea></div>
-    </div>
-    <div class="mft">
-      <button class="btn btn-g" onclick="cMod('mo-org')">Cancelar</button>
-      <button class="btn btn-p" onclick="sOrg()">Salvar</button>
-    </div>
-  </div>
-</div>
-
-<!-- ══ CONFIRM DELETE ══ -->
-<div class="mo" id="mo-del">
-  <div class="modal" style="max-width:400px;">
-    <div class="modal-handle"></div>
-    <div class="mh"><h2>Confirmar exclusão</h2><button class="mc-x" onclick="cMod('mo-del')">✕</button></div>
-    <div class="mb"><p style="font-size:13px;color:var(--muted);line-height:1.6;" id="del-msg"></p></div>
-    <div class="mft">
-      <button class="btn btn-g" onclick="cMod('mo-del')">Cancelar</button>
-      <button style="padding:10px 18px;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;background:transparent;color:var(--err);border:1px solid rgba(229,57,53,.3);font-family:'Space Grotesk',sans-serif;" id="del-ok">Excluir</button>
-    </div>
-  </div>
-</div>
-
-<div id="toast"></div>
 
 </body>
 </html>
