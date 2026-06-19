@@ -162,8 +162,8 @@ nav{flex:1;padding:4px 0;}
 .chart-pad{padding-bottom:24px;padding-top:20px;padding-left:14px;padding-right:14px;}
 
 /* ─── MODAL ─── */
-.mo{position:fixed;inset:0;z-index:2147483647;background:rgba(0,0,0,.65);display:none;align-items:flex-end;justify-content:center;}
-.mo.open{display:flex;}
+.mo{position:fixed!important;inset:0!important;z-index:2147483647!important;background:rgba(0,0,0,.65)!important;display:none!important;align-items:flex-end!important;justify-content:center!important;}
+.mo.open{display:flex!important;}
 .modal{background:var(--card);border:1px solid var(--border);border-radius:20px 20px 0 0;width:100%;max-width:560px;max-height:92vh;overflow-y:auto;-webkit-overflow-scrolling:touch;padding-bottom:env(safe-area-inset-bottom,16px);}
 .modal-handle{display:flex;justify-content:center;padding:10px 0 4px;}
 .modal-handle::before{content:'';width:36px;height:3px;background:rgba(232,135,42,.25);border-radius:2px;}
@@ -434,6 +434,7 @@ nav{flex:1;padding:4px 0;}
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <script>
+  
 // ═══════════════════════════════════════════════
 // CREDENCIAIS — edite aqui ou no GitHub
 // Supabase → Settings → API
@@ -441,6 +442,7 @@ nav{flex:1;padding:4px 0;}
 const SB_URL  = 'https://cwdjdvsdswpisqidcayn.supabase.co'; // ← Project URL
 const SB_KEY  = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN3ZGpkdnNkc3dwaXNxaWRjYXluIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODEzMDI0ODEsImV4cCI6MjA5Njg3ODQ4MX0.yl_yleFrsNgQhOrN15op8EfK4LtfQ3UNHNH1-uh5svU';                  // ← anon public key
 // ═══════════════════════════════════════════════
+
 let sbClient=null;
 function getSB(){if(!sbClient&&SB_URL!=='https://SEU_PROJECT_ID.supabase.co')sbClient=window.supabase?.createClient(SB_URL,SB_KEY);return sbClient;}
 
@@ -613,11 +615,20 @@ function oMod(id){
   var el = document.getElementById(id);
   if(!el){ console.error('Modal não encontrado:', id); return; }
   el.classList.add('open');
-  console.log('Modal aberto:', id, el.classList);
+  // inline style garante que extensões não sobrescrevem
+  el.style.setProperty('display','flex','important');
+  el.style.setProperty('position','fixed','important');
+  el.style.setProperty('inset','0','important');
+  el.style.setProperty('z-index','2147483647','important');
+  el.style.setProperty('background','rgba(0,0,0,.65)','important');
+  el.style.setProperty('align-items','flex-end','important');
+  el.style.setProperty('justify-content','center','important');
 }
 function cMod(id){
   var el = document.getElementById(id);
-  if(el) el.classList.remove('open');
+  if(!el) return;
+  el.classList.remove('open');
+  el.style.setProperty('display','none','important');
 }
 document.querySelectorAll('.mo').forEach(o=>o.addEventListener('click',e=>{if(e.target===o)o.classList.remove('open');}));
 // swipe down to close modals
@@ -737,6 +748,4 @@ document.addEventListener('DOMContentLoaded', function() {
 
 </body>
 </html>
-
-
 
