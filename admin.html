@@ -162,8 +162,7 @@ nav{flex:1;padding:4px 0;}
 .chart-pad{padding-bottom:24px;padding-top:20px;padding-left:14px;padding-right:14px;}
 
 /* ─── MODAL ─── */
-.mo{position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,.65);display:none;align-items:flex-end;justify-content:center;}
-.mo.open{display:flex;}
+.mo{position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,.65);align-items:flex-end;justify-content:center;}
 .modal{background:var(--card);border:1px solid var(--border);border-radius:20px 20px 0 0;width:100%;max-width:560px;max-height:92vh;overflow-y:auto;-webkit-overflow-scrolling:touch;padding-bottom:env(safe-area-inset-bottom,16px);}
 .modal-handle{display:flex;justify-content:center;padding:10px 0 4px;}
 .modal-handle::before{content:'';width:36px;height:3px;background:rgba(232,135,42,.25);border-radius:2px;}
@@ -595,19 +594,21 @@ function goTo(s,el){
 function toast(msg,ok=true){const t=document.getElementById('toast');t.textContent=msg;t.className=ok?'ok show':'er show';setTimeout(()=>t.className=ok?'ok':'er',3000);}
 
 // ── MODALs ──
+// Controle via inline style: vence qualquer CSS ou extensão
 function oMod(id){
   var el=document.getElementById(id);
   if(!el){console.error('Modal não encontrado:',id);return;}
-  el.classList.add('open');
+  el.style.cssText='display:flex!important;position:fixed!important;inset:0!important;z-index:2147483647!important;background:rgba(0,0,0,.65)!important;align-items:flex-end!important;justify-content:center!important;';
 }
 function cMod(id){
   var el=document.getElementById(id);
   if(!el)return;
-  el.classList.remove('open');
+  el.style.cssText='display:none!important;';
 }
 
-// Fechar clicando no overlay
+// Inicializa todos os modais como ocultos via inline style
 document.querySelectorAll('.mo').forEach(function(o){
+  o.style.cssText='display:none!important;';
   o.addEventListener('click',function(e){if(e.target===o)cMod(o.id);});
 });
 
@@ -711,4 +712,4 @@ async function doDel(tipo,id){
 }
 </script>
 </body>
-</html>  
+</html>
