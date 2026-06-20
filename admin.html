@@ -21,7 +21,7 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
 input,select,textarea,button{font-family:'Space Grotesk',sans-serif;-webkit-appearance:none;}
 
 /* ─── LAYOUT ─── */
-#app{display:flex;height:100vh;position:relative;z-index:0;isolation:auto;}
+#app{display:flex;height:100vh;position:relative;z-index:0;}
 
 /* ─── SIDEBAR (desktop) ─── */
 #sb{width:210px;background:var(--surface);border-right:1px solid var(--border);
@@ -162,8 +162,8 @@ nav{flex:1;padding:4px 0;}
 .chart-pad{padding-bottom:24px;padding-top:20px;padding-left:14px;padding-right:14px;}
 
 /* ─── MODAL ─── */
-.mo{position:fixed!important;inset:0!important;z-index:2147483647!important;background:rgba(0,0,0,.65)!important;display:none!important;align-items:flex-end!important;justify-content:center!important;}
-.mo.open{display:flex!important;}
+.mo{position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,.65);display:none;align-items:flex-end;justify-content:center;}
+.mo.open{display:flex;}
 .modal{background:var(--card);border:1px solid var(--border);border-radius:20px 20px 0 0;width:100%;max-width:560px;max-height:92vh;overflow-y:auto;-webkit-overflow-scrolling:touch;padding-bottom:env(safe-area-inset-bottom,16px);}
 .modal-handle{display:flex;justify-content:center;padding:10px 0 4px;}
 .modal-handle::before{content:'';width:36px;height:3px;background:rgba(232,135,42,.25);border-radius:2px;}
@@ -191,7 +191,7 @@ nav{flex:1;padding:4px 0;}
 .hbtn svg{width:14px;height:14px;stroke:var(--ink);fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round;}
 
 /* ─── TOAST ─── */
-#toast{position:fixed;bottom:28px;left:50%;transform:translateX(-50%) translateY(20px);z-index:999;padding:9px 20px;border-radius:20px;font-size:12px;font-weight:700;opacity:0;pointer-events:none;transition:all .25s;white-space:nowrap;max-width:calc(100vw - 32px);text-align:center;}
+#toast{position:fixed;bottom:28px;left:50%;transform:translateX(-50%) translateY(20px);z-index:10000;padding:9px 20px;border-radius:20px;font-size:12px;font-weight:700;opacity:0;pointer-events:none;transition:all .25s;white-space:nowrap;max-width:calc(100vw - 32px);text-align:center;}
 #toast.ok{background:rgba(76,175,80,.92);color:#fff;}
 #toast.er{background:rgba(229,57,53,.92);color:#fff;}
 #toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
@@ -296,9 +296,7 @@ nav{flex:1;padding:4px 0;}
         </div>
         <div class="tc" style="margin-bottom:16px;">
           <div class="th"><h3>Próximos eventos</h3></div>
-          <!-- desktop -->
           <table class="desk-table"><thead><tr><th>Evento</th><th>Local</th><th>Data</th><th>Ingresso</th><th>Status</th></tr></thead><tbody id="d-ev-desk"></tbody></table>
-          <!-- mobile -->
           <div class="mob-list" id="d-ev-mob"></div>
         </div>
         <div class="tc">
@@ -333,9 +331,12 @@ nav{flex:1;padding:4px 0;}
 
     </div>
   </div>
+</div>
+<!-- FIM #app -->
 
+<!-- ══ MODAIS — fora do #app para evitar stacking context de extensões ══ -->
 
-<!-- ══ MODAL EVENTO ══ -->
+<!-- MODAL EVENTO -->
 <div class="mo" id="mo-ev">
   <div class="modal">
     <div class="modal-handle"></div>
@@ -376,7 +377,7 @@ nav{flex:1;padding:4px 0;}
   </div>
 </div>
 
-<!-- ══ MODAL ORG ══ -->
+<!-- MODAL ORG -->
 <div class="mo" id="mo-org">
   <div class="modal">
     <div class="modal-handle"></div>
@@ -413,7 +414,7 @@ nav{flex:1;padding:4px 0;}
   </div>
 </div>
 
-<!-- ══ CONFIRM DELETE ══ -->
+<!-- CONFIRM DELETE -->
 <div class="mo" id="mo-del">
   <div class="modal" style="max-width:400px;">
     <div class="modal-handle"></div>
@@ -428,20 +429,11 @@ nav{flex:1;padding:4px 0;}
 
 <div id="toast"></div>
 
-</div>
-
-
-
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <script>
-  
-// ═══════════════════════════════════════════════
-// CREDENCIAIS — edite aqui ou no GitHub
-// Supabase → Settings → API
-// ═══════════════════════════════════════════════
-const SB_URL  = 'https://cwdjdvsdswpisqidcayn.supabase.co'; // ← Project URL
-const SB_KEY  = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN3ZGpkdnNkc3dwaXNxaWRjYXluIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODEzMDI0ODEsImV4cCI6MjA5Njg3ODQ4MX0.yl_yleFrsNgQhOrN15op8EfK4LtfQ3UNHNH1-uh5svU';                  // ← anon public key
-// ═══════════════════════════════════════════════
+
+const SB_URL  = 'https://cwdjdvsdswpisqidcayn.supabase.co';
+const SB_KEY  = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN3ZGpkdnNkc3dwaXNxaWRjYXluIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODEzMDI0ODEsImV4cCI6MjA5Njg3ODQ4MX0.yl_yleFrsNgQhOrN15op8EfK4LtfQ3UNHNH1-uh5svU';
 
 let sbClient=null;
 function getSB(){if(!sbClient&&SB_URL!=='https://SEU_PROJECT_ID.supabase.co')sbClient=window.supabase?.createClient(SB_URL,SB_KEY);return sbClient;}
@@ -498,7 +490,7 @@ async function doLogout(){
   toggleDrawer(false);
 }
 
-// ── Maps para lookup por ID (evita JSON inline em onclick) ──
+// ── Maps para lookup por ID ──
 const EVTS_MAP = {};
 const ORGS_MAP = {};
 
@@ -536,18 +528,15 @@ function renderDash(dash,v7){
   document.getElementById('m-pro').textContent=dash?.orgs_pro??pro.length;
   if(dash)document.getElementById('m-ev-s').textContent=`${dash.interesses_30d||0} interesses/mês`;
 
-  // próximos — desktop
   const prox=pub.slice(0,5);
   document.getElementById('d-ev-desk').innerHTML=prox.map(e=>`
     <tr><td>${e.nome}</td><td>${e.org_nome}</td><td>${fmt(e.data_inicio)}</td><td>${fmtIng(e.tipo_ingresso,e.preco)}</td><td>${stB(e.status)}</td></tr>`).join('')||'<tr><td colspan="5" style="text-align:center;padding:20px;color:var(--muted);">Nenhum evento</td></tr>';
-  // próximos — mobile
   document.getElementById('d-ev-mob').innerHTML=prox.map(e=>`
     <div class="mob-card">
       <div class="mob-card-top"><span class="mob-card-name">${e.nome}</span>${stB(e.status)}</div>
       <div class="mob-card-meta">${e.org_nome} · ${fmt(e.data_inicio)} · ${fmtIng(e.tipo_ingresso,e.preco)}</div>
     </div>`).join('')||'<div class="empty"><div class="empty-icon">📅</div>Nenhum evento</div>';
 
-  // chart
   const days=['Dom','Seg','Ter','Qua','Qui','Sex','Sáb'];
   let vals;
   if(v7?.length){
@@ -562,13 +551,10 @@ function renderDash(dash,v7){
 
 // ── EV TABLE ──
 function renderEvTable(list){
-  // Guarda referência por ID para evitar JSON inline no onclick
   list.forEach(e => { EVTS_MAP[e.id] = e; });
-  // desktop
   document.getElementById('ev-desk').innerHTML=list.map(e=>`
     <tr><td>${e.nome}</td><td>${e.org_nome||'—'}</td><td>${fmt(e.data_inicio)}</td><td>${fmtIng(e.tipo_ingresso,e.preco)}</td><td>${stB(e.status)}</td>
-    <td><div class="acts"><button class="ab" data-id="${e.id}" data-type="ev" onclick="eEvById(this.dataset.id)">Editar</button><button class="ab ab-del" data-id="${e.id}" data-nome="${(e.nome||'').replace(/"/g,'&quot;')}" onclick="cDel('ev',this.dataset.id,this.dataset.nome)">Excluir</button></div></td></tr>`).join('')||'<tr><td colspan="6" style="text-align:center;padding:20px;color:var(--muted);">Nenhum evento</td></tr>';
-  // mobile
+    <td><div class="acts"><button class="ab" data-id="${e.id}" onclick="eEvById(this.dataset.id)">Editar</button><button class="ab ab-del" data-id="${e.id}" data-nome="${(e.nome||'').replace(/"/g,'&quot;')}" onclick="cDel('ev',this.dataset.id,this.dataset.nome)">Excluir</button></div></td></tr>`).join('')||'<tr><td colspan="6" style="text-align:center;padding:20px;color:var(--muted);">Nenhum evento</td></tr>';
   document.getElementById('ev-mob').innerHTML=list.map(e=>`
     <div class="mob-card">
       <div class="mob-card-top"><span class="mob-card-name">${e.nome}</span>${stB(e.status)}</div>
@@ -598,11 +584,9 @@ function goTo(s,el){
   document.querySelectorAll('.scr').forEach(x=>x.classList.remove('on'));
   document.querySelectorAll('.ni').forEach(x=>x.classList.remove('on'));
   document.getElementById('scr-'+s).classList.add('on');
-  // marca nos dois navs
   document.querySelectorAll(`[onclick*="'${s}'"]`).forEach(x=>x.classList.add('on'));
   const t={dashboard:'Dashboard',eventos:'Eventos',organizadores:'Organizadores'};
   document.getElementById('ptitle').textContent=t[s];
-  // Botões de ação fixos — visibilidade por tela
   document.getElementById('btn-novo-ev').style.display  = s==='eventos' ? 'inline-flex' : 'none';
   document.getElementById('btn-novo-org').style.display = s==='organizadores' ? 'inline-flex' : 'none';
 }
@@ -612,27 +596,30 @@ function toast(msg,ok=true){const t=document.getElementById('toast');t.textConte
 
 // ── MODALs ──
 function oMod(id){
-  var el = document.getElementById(id);
-  if(!el){ console.error('Modal não encontrado:', id); return; }
+  var el=document.getElementById(id);
+  if(!el){console.error('Modal não encontrado:',id);return;}
   el.classList.add('open');
-  // inline style garante que extensões não sobrescrevem
-  el.style.setProperty('display','flex','important');
-  el.style.setProperty('position','fixed','important');
-  el.style.setProperty('inset','0','important');
-  el.style.setProperty('z-index','2147483647','important');
-  el.style.setProperty('background','rgba(0,0,0,.65)','important');
-  el.style.setProperty('align-items','flex-end','important');
-  el.style.setProperty('justify-content','center','important');
 }
 function cMod(id){
-  var el = document.getElementById(id);
-  if(!el) return;
+  var el=document.getElementById(id);
+  if(!el)return;
   el.classList.remove('open');
-  el.style.setProperty('display','none','important');
 }
-document.querySelectorAll('.mo').forEach(o=>o.addEventListener('click',e=>{if(e.target===o)o.classList.remove('open');}));
-// swipe down to close modals
-document.querySelectorAll('.modal').forEach(m=>{let ts=0;m.addEventListener('touchstart',e=>{ts=e.touches[0].clientY;},{passive:true});m.addEventListener('touchend',e=>{if(e.changedTouches[0].clientY-ts>60)m.closest('.mo')?.classList.remove('open');},{passive:true});});
+
+// Fechar clicando no overlay
+document.querySelectorAll('.mo').forEach(function(o){
+  o.addEventListener('click',function(e){if(e.target===o)cMod(o.id);});
+});
+
+// Swipe down para fechar no mobile
+document.querySelectorAll('.modal').forEach(function(m){
+  var ts=0;
+  m.addEventListener('touchstart',function(e){ts=e.touches[0].clientY;},{passive:true});
+  m.addEventListener('touchend',function(e){
+    if(e.changedTouches[0].clientY-ts>60){var mo=m.closest('.mo');if(mo)cMod(mo.id);}
+  },{passive:true});
+});
+
 function tP(){document.getElementById('fp').style.display=document.getElementById('ev-ing').value==='pago'?'block':'none';}
 
 // ── EVENTO MODAL ──
@@ -722,30 +709,6 @@ async function doDel(tipo,id){
   else{ORGS=ORGS.filter(o=>o.id!==id);renderOrgTable(ORGS);}
   renderDash(null,null);cMod('mo-del');toast('✓ Excluído');
 }
-
-// ── Bindings dos botões de ação (depois do DOM pronto) ──
-document.addEventListener('DOMContentLoaded', function() {
-  // Fechar modal clicando no overlay
-  document.querySelectorAll('.mo').forEach(function(o) {
-    o.addEventListener('click', function(e) {
-      if (e.target === o) o.classList.remove('open');
-    });
-  });
-
-  // Swipe down para fechar modais no mobile
-  document.querySelectorAll('.modal').forEach(function(m) {
-    var ts = 0;
-    m.addEventListener('touchstart', function(e) { ts = e.touches[0].clientY; }, {passive:true});
-    m.addEventListener('touchend',   function(e) {
-      if (e.changedTouches[0].clientY - ts > 60) {
-        var mo = m.closest('.mo');
-        if (mo) mo.classList.remove('open');
-      }
-    }, {passive:true});
-  });
-});
 </script>
-
 </body>
-</html>
-
+</html>  
