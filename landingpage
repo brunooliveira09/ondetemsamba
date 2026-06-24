@@ -443,11 +443,6 @@ footer p{font-size:11px;color:var(--muted);}
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <script>
   
-// ANTES (inseguro)
-const supabase = createClient('https://xxx.supabase.co', 'eyJ...')
-await supabase.from('leads').insert([{ nome, whatsapp, cidade }])
-
-// DEPOIS (seguro)
 await fetch('/api/leads', {
   method: 'POST',
   headers: { 'Content-Type': 'application/json' },
