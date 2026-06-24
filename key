@@ -443,10 +443,16 @@ footer p{font-size:11px;color:var(--muted);}
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <script>
   
-// ── CREDENCIAIS SUPABASE ──────────────────────────────────
-const SB_URL  = 'https://cwdjdvsdswpisqidcayn.supabase.co'; // ← Project URL
-const SB_KEY  = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN3ZGpkdnNkc3dwaXNxaWRjYXluIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODEzMDI0ODEsImV4cCI6MjA5Njg3ODQ4MX0.yl_yleFrsNgQhOrN15op8EfK4LtfQ3UNHNH1-uh5svU';                  // ← anon public key
-// ─────────────────────────────────────────────────────────
+// ANTES (inseguro)
+const supabase = createClient('https://xxx.supabase.co', 'eyJ...')
+await supabase.from('leads').insert([{ nome, whatsapp, cidade }])
+
+// DEPOIS (seguro)
+await fetch('/api/leads', {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify({ nome, whatsapp, cidade })
+})
 
 async function submitForm(){
   const nome   = document.getElementById('cap-nome').value.trim();
