@@ -440,37 +440,62 @@ footer p{font-size:11px;color:var(--muted);}
   <p>© 2026 Onde Tem Samba · Feito com 🎵 no Brasil</p>
 </footer>
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <script>
-  
-await fetch('/api/leads', {
-  method: 'POST',
-  headers: { 'Content-Type': 'application/json' },
-  body: JSON.stringify({ nome, whatsapp, cidade })
-})
+  // ─── Submissão do formulário ───────────────────────────────────────────────
+  // As credenciais do Supabase ficam em /api/leads.js (servidor).
+  // O browser só chama /api/leads via fetch — nunca vê a chave.
 
-async function submitForm(){
-  const nome   = document.getElementById('cap-nome').value.trim();
-  const wa     = document.getElementById('cap-wa').value.trim();
-  const cidade = document.getElementById('cap-cidade').value.trim();
-  const errEl  = document.getElementById('cap-err');
-  const btn    = document.getElementById('cap-btn');
-  errEl.style.display = 'none';
-  if(!nome||!wa||!cidade){errEl.style.display='block';return;}
-  btn.disabled=true;btn.textContent='Enviando...';
-  const ok=SB_URL.includes('supabase.co')&&!SB_URL.includes('SEU_PROJECT');
-  if(ok){
-    try{
-      const sb=window.supabase.createClient(SB_URL,SB_KEY);
-      await sb.from('lista_espera').insert({nome,whatsapp:wa,cidade});
-    }catch(e){console.warn(e);}
+  async function submitForm() {
+    const nome    = document.getElementById('cap-nome').value.trim();
+    const wa      = document.getElementById('cap-wa').value.trim();
+    const cidade  = document.getElementById('cap-cidade').value.trim();
+    const errEl   = document.getElementById('cap-err');
+    const btn     = document.getElementById('cap-btn');
+
+    // Limpa erro anterior
+    errEl.style.display = 'none';
+
+    // Validação front-end
+    if (!nome || !wa || !cidade) {
+      errEl.textContent = 'Preencha todos os campos.';
+      errEl.style.display = 'block';
+      return;
+    }
+
+    // Estado de loading
+    btn.disabled = true;
+    btn.textContent = 'Enviando...';
+
+    try {
+      const res = await fetch('/api/leads', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ nome, whatsapp: wa, cidade })
+      });
+
+      if (!res.ok) {
+        const data = await res.json();
+        throw new Error(data.error || 'Erro ao enviar.');
+      }
+
+      // Sucesso
+      document.getElementById('cap-form').style.display = 'none';
+      document.getElementById('cap-ok').style.display   = 'block';
+
+    } catch (e) {
+      errEl.textContent = e.message || 'Algo deu errado. Tente novamente.';
+      errEl.style.display = 'block';
+      btn.disabled = false;
+      btn.textContent = 'Me coloque na lista de espera';
+    }
   }
-  document.getElementById('cap-form').style.display='none';
-  document.getElementById('cap-ok').style.display='block';
-}
-['cap-nome','cap-wa','cap-cidade'].forEach(id=>{
-  document.getElementById(id).addEventListener('keydown',e=>{if(e.key==='Enter')submitForm();});
-});
+
+  // Permitir submit com Enter em qualquer campo
+  ['cap-nome', 'cap-wa', 'cap-cidade'].forEach(id => {
+    document.getElementById(id).addEventListener('keydown', e => {
+      if (e.key === 'Enter') submitForm();
+    });
+  });
 </script>
 </body>
 </html>
