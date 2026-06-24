@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "name": "onde-tem-samba",
+  "name": "ondetemsamba",
   "cleanUrls": false,
   "trailingSlash": false,
   "routes": [
@@ -8,6 +8,10 @@
       "src": "/env\\.js",
       "status": 404,
       "headers": { "x-robots-tag": "noindex" }
+    },
+    {
+      "src": "/api/(.*)",
+      "dest": "/api/$1"
     },
     { "src": "/(.*)", "dest": "/$1" }
   ],
