@@ -454,10 +454,30 @@ let EVTS=[],ORGS=[];
 async function doLogin(){
   const email=document.getElementById('l-email').value.trim();
   const senha=document.getElementById('l-senha').value;
-  document.getElementById('lerr').style.display='none';
-  const sb=getSB();
-  if(sb){
-    const{error}=await sb.auth.signInWithPassword({email,password:senha});
+  const errEl=document.getElementById('lerr');
+  errEl.style.display='none';
+
+  try {
+    const res = await fetch('/api/admin-login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, senha })
+    });
+
+    if (!res.ok) {
+      errEl.style.display='block';
+      document.getElementById('l-senha').value='';
+      return;
+    }
+
+    const data = await res.json();
+    enterAdmin(data.email);
+
+  } catch(e) {
+    errEl.style.display='block';
+    document.getElementById('l-senha').value='';
+  }
+}=await sb.auth.signInWithPassword({email,password:senha});
     if(error){document.getElementById('lerr').style.display='block';document.getElementById('l-senha').value='';return;}
     enterAdmin(email);
   } else {
