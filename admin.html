@@ -456,33 +456,18 @@ async function doLogin(){
   const senha=document.getElementById('l-senha').value;
   const errEl=document.getElementById('lerr');
   errEl.style.display='none';
-
-  try {
-    const res = await fetch('/api/admin-login', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email, senha })
+  try{
+    const res=await fetch('/api/admin-login',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({email,senha})
     });
-
-    if (!res.ok) {
-      errEl.style.display='block';
-      document.getElementById('l-senha').value='';
-      return;
-    }
-
-    const data = await res.json();
+    if(!res.ok){errEl.style.display='block';document.getElementById('l-senha').value='';return;}
+    const data=await res.json();
     enterAdmin(data.email);
-
-  } catch(e) {
+  }catch(e){
     errEl.style.display='block';
     document.getElementById('l-senha').value='';
-  }
-}=await sb.auth.signInWithPassword({email,password:senha});
-    if(error){document.getElementById('lerr').style.display='block';document.getElementById('l-senha').value='';return;}
-    enterAdmin(email);
-  } else {
-    if(email==='admin@ondetemSamba.com.br'&&senha==='samba@2024')enterAdmin(email);
-    else{document.getElementById('lerr').style.display='block';document.getElementById('l-senha').value='';}
   }
 }
 document.getElementById('l-senha').addEventListener('keydown',e=>{if(e.key==='Enter')doLogin();});
