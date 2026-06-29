@@ -490,24 +490,22 @@ function eEvById(id)  { const e = EVTS_MAP[id]; if(e) eEv(e);   else console.war
 function eOrgById(id) { const o = ORGS_MAP[id]; if(o) eOrg(o);  else console.warn('Org não encontrada:', id); }
 
 // ── LOAD ──
-async function loadAll(){
-  const sb=getSB();
-  if(sb){
-    try{
-      const[{data:ev},{data:org},{data:dash},{data:v7}]=await Promise.all([
-        sb.from('eventos').select('*,organizadores(nome)').order('data_inicio'),
-        sb.from('organizadores').select('*').order('nome'),
-        sb.from('v_dashboard').select('*').single(),
-        sb.from('v_views_por_dia').select('*'),
-      ]);
-      EVTS=(ev||[]).map(e=>({...e,org_nome:e.organizadores?.nome||'—'}));
-      ORGS=org||[];
-      renderDash(dash,v7);renderEvTable(EVTS);renderOrgTable(ORGS);
+async async function loadAll(){
+  try{
+    const res = await fetch('/api/admin-data');
+    if(res.ok){
+      const d = await res.json();
+      EVTS = (d.ev||[]).map(e=>({...e, org_nome: e.organizadores?.nome||'—'}));
+      ORGS = d.org||[];
+      renderDash(d.dash, d.v7);
+      renderEvTable(EVTS);
+      renderOrgTable(ORGS);
       return;
-    }catch(e){console.warn('SB:',e.message);}
-  }
-  EVTS=SEED_EV;ORGS=SEED_ORGS;
-  renderDash(null,null);renderEvTable(EVTS);renderOrgTable(ORGS);
+    }
+  }catch(e){ console.warn('admin-data:', e.message); }
+  // fallback dados seed
+  EVTS=SEED_EV; ORGS=SEED_ORGS;
+  renderDash(null,null); renderEvTable(EVTS); renderOrgTable(ORGS);
 }
 
 // ── DASHBOARD ──
