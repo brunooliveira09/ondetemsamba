@@ -423,8 +423,8 @@ nav{flex:1;padding:4px 0;}
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <script>
 
-const SB_URL  = (typeof CFG !== 'undefined' && CFG.SUPABASE_URL)  || window.__SB_URL  || '';
-const SB_KEY  = (typeof CFG !== 'undefined' && CFG.SUPABASE_KEY) || window.__SB_KEY  || '';
+const SB_URL  = '';
+const SB_KEY  = '';
 
 let sbClient=null;
 function getSB(){if(!sbClient&&SB_URL!=='https://SEU_PROJECT_ID.supabase.co')sbClient=window.supabase?.createClient(SB_URL,SB_KEY);return sbClient;}
@@ -490,22 +490,21 @@ function eEvById(id)  { const e = EVTS_MAP[id]; if(e) eEv(e);   else console.war
 function eOrgById(id) { const o = ORGS_MAP[id]; if(o) eOrg(o);  else console.warn('Org não encontrada:', id); }
 
 // ── LOAD ──
-async async function loadAll(){
+async function loadAll(){
   try{
-    const res = await fetch('/api/admin-data');
+    const res=await fetch('/api/admin-data');
     if(res.ok){
-      const d = await res.json();
-      EVTS = (d.ev||[]).map(e=>({...e, org_nome: e.organizadores?.nome||'—'}));
-      ORGS = d.org||[];
-      renderDash(d.dash, d.v7);
+      const d=await res.json();
+      EVTS=(d.ev||[]).map(e=>({...e,org_nome:e.organizadores?.nome||'—'}));
+      ORGS=d.org||[];
+      renderDash(d.dash,d.v7);
       renderEvTable(EVTS);
       renderOrgTable(ORGS);
       return;
     }
-  }catch(e){ console.warn('admin-data:', e.message); }
-  // fallback dados seed
-  EVTS=SEED_EV; ORGS=SEED_ORGS;
-  renderDash(null,null); renderEvTable(EVTS); renderOrgTable(ORGS);
+  }catch(e){console.warn('admin-data:',e.message);}
+  EVTS=SEED_EV;ORGS=SEED_ORGS;
+  renderDash(null,null);renderEvTable(EVTS);renderOrgTable(ORGS);
 }
 
 // ── DASHBOARD ──
@@ -636,22 +635,22 @@ function eEv(e){
 }
 async function sEv(){
   const nome=document.getElementById('ev-nome').value.trim();
-  const data=document.getElementById('ev-data').value;
-  if(!nome||!data){toast('Preencha nome e data.',false);return;}
-  const org=document.getElementById('ev-org');
-  const orgNome=org.options[org.selectedIndex]?.text||'—';
-  const payload={nome,data_inicio:data,hora_inicio:document.getElementById('ev-ini').value,
-    recorrencia:document.getElementById('ev-rec').value,tipo_ingresso:document.getElementById('ev-ing').value,
-    preco:document.getElementById('ev-preco').value||null,lat:document.getElementById('ev-lat').value||null,
-    lng:document.getElementById('ev-lng').value||null,foto_url:document.getElementById('ev-img').value||null,
-    descricao:document.getElementById('ev-desc').value,status:document.getElementById('ev-status').value,
-    organizador_id:org.value||null};
-  const id=document.getElementById('ev-id').value;
-  const sb=getSB();
-  if(sb){const q=id?sb.from('eventos').update(payload).eq('id',id):sb.from('eventos').insert(payload).select().single();const{error,data}=await q;if(error){toast('Erro: '+error.message,false);return;}if(!id&&data)payload.id=data.id;}
-  if(id){const i=EVTS.findIndex(e=>e.id===id);if(i>=0)EVTS[i]={...EVTS[i],...payload,org_nome:orgNome};}
-  else EVTS.unshift({...payload,id:payload.id||'e'+Date.now(),org_nome:orgNome});
-  cMod('mo-ev');renderEvTable(EVTS);renderDash(null,null);toast(id?'✓ Evento atualizado':'✓ Evento criado');
+  const org=document.getElementById('ev-org').value;
+  const data_inicio=document.getElementById('ev-data').value;
+  const hora_inicio=document.getElementById('ev-hora').value;
+  const cidade=document.getElementById('ev-cidade').value.trim();
+  const lat=parseFloat(document.getElementById('ev-lat').value)||null;
+  const lng=parseFloat(document.getElementById('ev-lng').value)||null;
+  const status=document.getElementById('ev-status').value;
+  const recorrencia=document.getElementById('ev-rec').value;
+  const id=document.getElementById('ev-id').value||null;
+  if(!nome){toast('Nome obrigatório',false);return;}
+  const payload={nome,organizador_id:org||null,data_inicio,hora_inicio,cidade,lat,lng,status,recorrencia,id};
+  try{
+    const res=await fetch('/api/admin-save',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({tipo:'ev',payload})});
+    if(!res.ok){const d=await res.json();toast('Erro: '+(d.error||'?'),false);return;}
+    toast('Evento salvo!',true);cMod('mo-ev');loadAll();
+  }catch(e){toast('Erro: '+e.message,false);}
 }
 
 // ── ORG MODAL ──
@@ -673,20 +672,16 @@ function eOrg(o){
 }
 async function sOrg(){
   const nome=document.getElementById('org-nome').value.trim();
-  if(!nome){toast('Informe o nome.',false);return;}
-  const id=document.getElementById('org-id').value;
-  const payload={nome,endereco:document.getElementById('org-end').value,cidade:document.getElementById('org-city').value,
-    estado:document.getElementById('org-uf').value,lat:document.getElementById('org-lat').value||null,
-    lng:document.getElementById('org-lng').value||null,instagram:document.getElementById('org-ig').value,
-    email:document.getElementById('org-mail').value,foto_url:document.getElementById('org-foto').value||null,
-    descricao:document.getElementById('org-desc').value,plano:document.getElementById('org-plano').value,
-    ativo:document.getElementById('org-ativo').value==='true',
-    slug:nome.toLowerCase().replace(/\s+/g,'-').replace(/[^a-z0-9-]/g,'')};
-  const sb=getSB();
-  if(sb){const q=id?sb.from('organizadores').update(payload).eq('id',id):sb.from('organizadores').insert(payload).select().single();const{error,data}=await q;if(error){toast('Erro: '+error.message,false);return;}if(!id&&data)payload.id=data.id;}
-  if(id){const i=ORGS.findIndex(o=>o.id===id);if(i>=0)ORGS[i]={...ORGS[i],...payload};}
-  else ORGS.unshift({...payload,id:payload.id||'o'+Date.now()});
-  cMod('mo-org');renderOrgTable(ORGS);renderDash(null,null);toast(id?'✓ Organizador atualizado':'✓ Organizador criado');
+  const slug=document.getElementById('org-slug').value.trim();
+  const plano=document.getElementById('org-plano').value;
+  const id=document.getElementById('org-id').value||null;
+  if(!nome){toast('Nome obrigatório',false);return;}
+  const payload={nome,slug,plano,id};
+  try{
+    const res=await fetch('/api/admin-save',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({tipo:'org',payload})});
+    if(!res.ok){const d=await res.json();toast('Erro: '+(d.error||'?'),false);return;}
+    toast('Organizador salvo!',true);cMod('mo-org');loadAll();
+  }catch(e){toast('Erro: '+e.message,false);}
 }
 
 // ── DELETE ──
@@ -695,11 +690,11 @@ function cDel(tipo,id,nome){
   document.getElementById('del-ok').onclick=()=>doDel(tipo,id);oMod('mo-del');
 }
 async function doDel(tipo,id){
-  const sb=getSB();
-  if(sb){const{error}=await sb.from(tipo==='ev'?'eventos':'organizadores').delete().eq('id',id);if(error){toast('Erro: '+error.message,false);cMod('mo-del');return;}}
-  if(tipo==='ev'){EVTS=EVTS.filter(e=>e.id!==id);renderEvTable(EVTS);}
-  else{ORGS=ORGS.filter(o=>o.id!==id);renderOrgTable(ORGS);}
-  renderDash(null,null);cMod('mo-del');toast('✓ Excluído');
+  try{
+    const res=await fetch('/api/admin-save',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({tipo,action:'delete',payload:{id}})});
+    if(!res.ok){const d=await res.json();toast('Erro: '+(d.error||'?'),false);return;}
+    toast('Removido!',true);cMod('mo-del');loadAll();
+  }catch(e){toast('Erro: '+e.message,false);}
 }
 </script>
 </body>
