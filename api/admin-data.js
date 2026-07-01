@@ -21,15 +21,10 @@ export default async function handler(req, res) {
       supabase.from('v_views_por_dia').select('*'),
     ])
 
-    if (e1 || e2) {
-      console.error('Erros:', e1?.message, e2?.message)
-      return res.status(500).json({ error: 'Erro ao carregar dados' })
-    }
+    if (e1 || e2) return res.status(500).json({ error: (e1||e2).message })
 
     return res.status(200).json({ ev: ev||[], org: org||[], dash: dash||null, v7: v7||[] })
-
   } catch(e) {
-    console.error(e)
     return res.status(500).json({ error: e.message })
   }
 }
