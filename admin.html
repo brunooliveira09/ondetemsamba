@@ -322,7 +322,6 @@ nav{flex:1;padding:4px 0;}
 
     </div>
   </div>
-</div>
 <!-- FIM #app -->
 
 <!-- ══ MODAIS — fora do #app para evitar stacking context de extensões ══ -->
@@ -645,9 +644,9 @@ async function sEv(){
   const recorrencia=document.getElementById('ev-rec').value;
   const id=document.getElementById('ev-id').value||null;
   if(!nome){toast('Nome obrigatório',false);return;}
-  const payload={nome,organizador_id:org||null,data_inicio,hora_inicio,cidade,lat,lng,status,recorrencia,id};
   try{
-    const res=await fetch('/api/admin-save',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({tipo:'ev',payload})});
+    const res=await fetch('/api/admin-save',{method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({tipo:'ev',payload:{nome,organizador_id:org||null,data_inicio,hora_inicio,cidade,lat,lng,status,recorrencia,id}})});
     if(!res.ok){const d=await res.json();toast('Erro: '+(d.error||'?'),false);return;}
     toast('Evento salvo!',true);cMod('mo-ev');loadAll();
   }catch(e){toast('Erro: '+e.message,false);}
@@ -676,9 +675,9 @@ async function sOrg(){
   const plano=document.getElementById('org-plano').value;
   const id=document.getElementById('org-id').value||null;
   if(!nome){toast('Nome obrigatório',false);return;}
-  const payload={nome,slug,plano,id};
   try{
-    const res=await fetch('/api/admin-save',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({tipo:'org',payload})});
+    const res=await fetch('/api/admin-save',{method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({tipo:'org',payload:{nome,slug,plano,id}})});
     if(!res.ok){const d=await res.json();toast('Erro: '+(d.error||'?'),false);return;}
     toast('Organizador salvo!',true);cMod('mo-org');loadAll();
   }catch(e){toast('Erro: '+e.message,false);}
@@ -691,7 +690,8 @@ function cDel(tipo,id,nome){
 }
 async function doDel(tipo,id){
   try{
-    const res=await fetch('/api/admin-save',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({tipo,action:'delete',payload:{id}})});
+    const res=await fetch('/api/admin-save',{method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({tipo,action:'delete',payload:{id}})});
     if(!res.ok){const d=await res.json();toast('Erro: '+(d.error||'?'),false);return;}
     toast('Removido!',true);cMod('mo-del');loadAll();
   }catch(e){toast('Erro: '+e.message,false);}
