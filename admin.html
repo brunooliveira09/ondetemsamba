@@ -426,7 +426,7 @@ const SB_URL  = '';
 const SB_KEY  = '';
 
 let sbClient=null;
-function getSB(){if(!sbClient&&SB_URL!=='https://SEU_PROJECT_ID.supabase.co')sbClient=window.supabase?.createClient(SB_URL,SB_KEY);return sbClient;}
+function getSB(){/* credenciais removidas — usar /api/* */return sbClient;}
 
 // ── DRAWER ──
 function toggleDrawer(open){
@@ -486,6 +486,7 @@ function eOrgById(id) { const o = ORGS_MAP[id]; if(o) eOrg(o);  else console.war
 
 // ── LOAD ──
 async function loadAll(){
+  let errMsg=null;
   try{
     const res=await fetch('/api/admin-data');
     if(res.ok){
@@ -495,9 +496,15 @@ async function loadAll(){
       renderDash(d.dash,d.v7);renderEvTable(EVTS);renderOrgTable(ORGS);
       return;
     }
-  }catch(e){console.warn('admin-data:',e.message);}
-  EVTS=SEED_EV;ORGS=SEED_ORGS;
-  renderDash(null,null);renderEvTable(EVTS);renderOrgTable(ORGS);
+    errMsg=(await res.json()).error||'Erro ao carregar dados';
+  }catch(e){errMsg=e.message;}
+  console.warn('admin-data:',errMsg);
+  EVTS=[];ORGS=[];
+  renderDash(null,null);renderEvTable([]);renderOrgTable([]);
+  const mc=document.getElementById('mc');
+  let errEl=document.getElementById('load-err');
+  if(!errEl){errEl=document.createElement('div');errEl.id='load-err';errEl.style.cssText='color:#e57373;padding:12px 16px;font-size:13px;';mc.prepend(errEl);}
+  errEl.textContent='⚠ '+errMsg;
 }
 
 // ── DASHBOARD ──
