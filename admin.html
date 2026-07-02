@@ -489,18 +489,17 @@ function eOrgById(id) { const o = ORGS_MAP[id]; if(o) eOrg(o);  else console.war
 async function loadAll(){
   try{
     const res=await fetch('/api/admin-data');
-    if(res.ok){
-      const d=await res.json();
-      EVTS=(d.ev||[]).map(e=>({...e,org_nome:e.organizadores?.nome||'—'}));
-      ORGS=d.org||[];
-      renderDash(d.dash,d.v7);
-      renderEvTable(EVTS);
-      renderOrgTable(ORGS);
-      return;
-    }
-  }catch(e){console.warn('admin-data:',e.message);}
-  EVTS=SEED_EV;ORGS=SEED_ORGS;
-  renderDash(null,null);renderEvTable(EVTS);renderOrgTable(ORGS);
+    const d=await res.json();
+    if(!res.ok){console.error('admin-data erro:',d.error);throw new Error(d.error);}
+    EVTS=(d.ev||[]).map(e=>({...e,org_nome:e.organizadores?.nome||'—'}));
+    ORGS=d.org||[];
+  }catch(e){
+    console.warn('Usando dados demo:',e.message);
+    EVTS=SEED_EV;ORGS=SEED_ORGS;
+  }
+  renderDash(null,null);
+  renderEvTable(EVTS);
+  renderOrgTable(ORGS);
 }
 
 // ── DASHBOARD ──
