@@ -426,7 +426,7 @@ const SB_URL  = '';
 const SB_KEY  = '';
 
 let sbClient=null;
-function getSB(){/* credenciais removidas — usar /api/* */return sbClient;}
+function getSB(){if(!sbClient&&SB_URL!=='https://SEU_PROJECT_ID.supabase.co')sbClient=window.supabase?.createClient(SB_URL,SB_KEY);return sbClient;}
 
 // ── DRAWER ──
 function toggleDrawer(open){
@@ -457,7 +457,8 @@ async function doLogin(){
   try{
     const res=await fetch('/api/admin-login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email,senha})});
     if(!res.ok){errEl.style.display='block';document.getElementById('l-senha').value='';return;}
-    enterAdmin((await res.json()).email);
+    const data=await res.json();
+    enterAdmin(data.email);
   }catch(e){errEl.style.display='block';document.getElementById('l-senha').value='';}
 }
 document.getElementById('l-senha').addEventListener('keydown',e=>{if(e.key==='Enter')doLogin();});
@@ -486,25 +487,19 @@ function eOrgById(id) { const o = ORGS_MAP[id]; if(o) eOrg(o);  else console.war
 
 // ── LOAD ──
 async function loadAll(){
-  let errMsg=null;
   try{
     const res=await fetch('/api/admin-data');
-    if(res.ok){
-      const d=await res.json();
-      EVTS=(d.ev||[]).map(e=>({...e,org_nome:e.organizadores?.nome||'—'}));
-      ORGS=d.org||[];
-      renderDash(d.dash,d.v7);renderEvTable(EVTS);renderOrgTable(ORGS);
-      return;
-    }
-    errMsg=(await res.json()).error||'Erro ao carregar dados';
-  }catch(e){errMsg=e.message;}
-  console.warn('admin-data:',errMsg);
-  EVTS=[];ORGS=[];
-  renderDash(null,null);renderEvTable([]);renderOrgTable([]);
-  const mc=document.getElementById('mc');
-  let errEl=document.getElementById('load-err');
-  if(!errEl){errEl=document.createElement('div');errEl.id='load-err';errEl.style.cssText='color:#e57373;padding:12px 16px;font-size:13px;';mc.prepend(errEl);}
-  errEl.textContent='⚠ '+errMsg;
+    const d=await res.json();
+    if(!res.ok){console.error('admin-data erro:',d.error);throw new Error(d.error);}
+    EVTS=(d.ev||[]).map(e=>({...e,org_nome:e.organizadores?.nome||'—'}));
+    ORGS=d.org||[];
+  }catch(e){
+    console.warn('Usando dados demo:',e.message);
+    EVTS=SEED_EV;ORGS=SEED_ORGS;
+  }
+  renderDash(null,null);
+  renderEvTable(EVTS);
+  renderOrgTable(ORGS);
 }
 
 // ── DASHBOARD ──
@@ -634,13 +629,22 @@ function eEv(e){
   document.getElementById('mev-t').textContent='Editar evento';oMod('mo-ev');
 }
 async function sEv(){
+  const nome=document.getElementById('ev-nome').value.trim();
+  const org=document.getElementById('ev-org').value;
+  const data_inicio=document.getElementById('ev-data').value;
+  const hora_inicio=document.getElementById('ev-hora').value;
+  const cidade=document.getElementById('ev-cidade').value.trim();
+  const lat=parseFloat(document.getElementById('ev-lat').value)||null;
+  const lng=parseFloat(document.getElementById('ev-lng').value)||null;
+  const status=document.getElementById('ev-status').value;
+  const recorrencia=document.getElementById('ev-rec').value;
   const id=document.getElementById('ev-id').value||null;
-  const payload={nome:document.getElementById('ev-nome').value.trim(),organizador_id:document.getElementById('ev-org').value||null,data_inicio:document.getElementById('ev-data').value,hora_inicio:document.getElementById('ev-ini').value,cidade:document.getElementById('ev-cidade')?.value?.trim()||'',lat:parseFloat(document.getElementById('ev-lat').value)||null,lng:parseFloat(document.getElementById('ev-lng').value)||null,status:document.getElementById('ev-status').value,recorrencia:document.getElementById('ev-rec').value,id};
-  if(!payload.nome){toast('Nome obrigatório',false);return;}
+  if(!nome){toast('Nome obrigatório',false);return;}
   try{
-    const res=await fetch('/api/admin-save',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({tipo:'ev',payload})});
-    if(!res.ok){toast('Erro: '+((await res.json()).error||'?'),false);return;}
-    toast('Salvo!',true);cMod('mo-ev');loadAll();
+    const res=await fetch('/api/admin-save',{method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({tipo:'ev',payload:{nome,organizador_id:org||null,data_inicio,hora_inicio,cidade,lat,lng,status,recorrencia,id}})});
+    if(!res.ok){const d=await res.json();toast('Erro: '+(d.error||'?'),false);return;}
+    toast('Evento salvo!',true);cMod('mo-ev');loadAll();
   }catch(e){toast('Erro: '+e.message,false);}
 }
 
@@ -662,13 +666,16 @@ function eOrg(o){
   document.getElementById('morg-t').textContent='Editar organizador';oMod('mo-org');
 }
 async function sOrg(){
+  const nome=document.getElementById('org-nome').value.trim();
+  const slug=document.getElementById('org-slug').value.trim();
+  const plano=document.getElementById('org-plano').value;
   const id=document.getElementById('org-id').value||null;
-  const payload={nome:document.getElementById('org-nome').value.trim(),slug:document.getElementById('org-slug').value.trim(),plano:document.getElementById('org-plano').value,id};
-  if(!payload.nome){toast('Nome obrigatório',false);return;}
+  if(!nome){toast('Nome obrigatório',false);return;}
   try{
-    const res=await fetch('/api/admin-save',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({tipo:'org',payload})});
-    if(!res.ok){toast('Erro: '+((await res.json()).error||'?'),false);return;}
-    toast('Salvo!',true);cMod('mo-org');loadAll();
+    const res=await fetch('/api/admin-save',{method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({tipo:'org',payload:{nome,slug,plano,id}})});
+    if(!res.ok){const d=await res.json();toast('Erro: '+(d.error||'?'),false);return;}
+    toast('Organizador salvo!',true);cMod('mo-org');loadAll();
   }catch(e){toast('Erro: '+e.message,false);}
 }
 
@@ -679,8 +686,9 @@ function cDel(tipo,id,nome){
 }
 async function doDel(tipo,id){
   try{
-    const res=await fetch('/api/admin-save',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({tipo,action:'delete',payload:{id}})});
-    if(!res.ok){toast('Erro: '+((await res.json()).error||'?'),false);return;}
+    const res=await fetch('/api/admin-save',{method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({tipo,action:'delete',payload:{id}})});
+    if(!res.ok){const d=await res.json();toast('Erro: '+(d.error||'?'),false);return;}
     toast('Removido!',true);cMod('mo-del');loadAll();
   }catch(e){toast('Erro: '+e.message,false);}
 }
